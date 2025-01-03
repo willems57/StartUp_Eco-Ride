@@ -49,10 +49,28 @@ class Ride
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'passager')]
     private Collection $passengers;
 
+    #[ORM\ManyToOne(inversedBy: 'rides')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Vehicle $voiture = null;
+
+    /**
+     * @var Collection<int, Booking>
+     */
+    #[ORM\OneToMany(targetEntity: Booking::class, mappedBy: 'Ride', orphanRemoval: true)]
+    private Collection $bookings;
+
+    /**
+     * @var Collection<int, Booking>
+     */
+    #[ORM\OneToMany(targetEntity: Booking::class, mappedBy: 'ride')]
+    private Collection $Booking;
+
     public function __construct()
     {
         $this->reviews = new ArrayCollection();
         $this->passengers = new ArrayCollection();
+        $this->bookings = new ArrayCollection();
+        $this->Booking = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -196,5 +214,55 @@ class Ride
         $this->passengers->removeElement($passenger);
 
         return $this;
+    }
+
+    public function getVoiture(): ?Vehicle
+    {
+        return $this->voiture;
+    }
+
+    public function setVoiture(?Vehicle $voiture): static
+    {
+        $this->voiture = $voiture;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Booking>
+     */
+    public function getBookings(): Collection
+    {
+        return $this->bookings;
+    }
+
+    public function addBooking(Booking $booking): static
+    {
+        if (!$this->bookings->contains($booking)) {
+            $this->bookings->add($booking);
+            $booking->setRide($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBooking(Booking $booking): static
+    {
+        if ($this->bookings->removeElement($booking)) {
+            // set the owning side to null (unless already changed)
+            if ($booking->getRide() === $this) {
+                $booking->setRide(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Booking>
+     */
+    public function getBooking(): Collection
+    {
+        return $this->Booking;
     }
 }

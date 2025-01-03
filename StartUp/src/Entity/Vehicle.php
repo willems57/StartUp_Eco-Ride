@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\VehicleRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: VehicleRepository::class)]
@@ -34,6 +36,17 @@ class Vehicle
 
     #[ORM\Column]
     private ?bool $allowSmokers = null;
+
+    /**
+     * @var Collection<int, Ride>
+     */
+    #[ORM\OneToMany(targetEntity: Ride::class, mappedBy: 'voiture')]
+    private Collection $rides;
+
+    public function __construct()
+    {
+        $this->rides = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -120,6 +133,36 @@ class Vehicle
     public function setAllowSmokers(bool $allowSmokers): static
     {
         $this->allowSmokers = $allowSmokers;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Ride>
+     */
+    public function getRides(): Collection
+    {
+        return $this->rides;
+    }
+
+    public function addRide(Ride $ride): static
+    {
+        if (!$this->rides->contains($ride)) {
+            $this->rides->add($ride);
+            $ride->setVoiture($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRide(Ride $ride): static
+    {
+        if ($this->rides->removeElement($ride)) {
+            // set the owning side to null (unless already changed)
+            if ($ride->getVoiture() === $this) {
+                $ride->setVoiture(null);
+            }
+        }
 
         return $this;
     }
