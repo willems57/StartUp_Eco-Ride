@@ -29,6 +29,12 @@ class Vehicle
     #[ORM\JoinColumn(nullable: false)]
     private ?User $driver = null;
 
+    #[ORM\Column]
+    private ?bool $allowAnimals = null;
+
+    #[ORM\Column]
+    private ?bool $allowSmokers = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -90,6 +96,30 @@ class Vehicle
     public function setDriver(?User $driver): static
     {
         $this->driver = $driver;
+
+        return $this;
+    }
+
+    public function isAllowAnimals(): ?bool
+    {
+        return $this->allowAnimals;
+    }
+
+    public function setAllowAnimals(bool $allowAnimals): static
+    {
+        $this->allowAnimals = $allowAnimals;
+
+        return $this;
+    }
+
+    public function isAllowSmokers(): ?bool
+    {
+        return $this->allowSmokers;
+    }
+
+    public function setAllowSmokers(bool $allowSmokers): static
+    {
+        $this->allowSmokers = $allowSmokers;
 
         return $this;
     }

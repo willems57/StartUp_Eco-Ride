@@ -51,10 +51,17 @@ class User
     #[ORM\OneToMany(targetEntity: Review::class, mappedBy: 'author', orphanRemoval: true)]
     private Collection $reviews;
 
+    /**
+     * @var Collection<int, Ride>
+     */
+    #[ORM\ManyToMany(targetEntity: Ride::class, mappedBy: 'passengers')]
+    private Collection $passager;
+
     public function __construct()
     {
         $this->vehicles = new ArrayCollection();
         $this->reviews = new ArrayCollection();
+        $this->passager = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -213,6 +220,33 @@ class User
             if ($review->getAuthor() === $this) {
                 $review->setAuthor(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Ride>
+     */
+    public function getPassager(): Collection
+    {
+        return $this->passager;
+    }
+
+    public function addPassager(Ride $passager): static
+    {
+        if (!$this->passager->contains($passager)) {
+            $this->passager->add($passager);
+            $passager->addPassenger($this);
+        }
+
+        return $this;
+    }
+
+    public function removePassager(Ride $passager): static
+    {
+        if ($this->passager->removeElement($passager)) {
+            $passager->removePassenger($this);
         }
 
         return $this;
