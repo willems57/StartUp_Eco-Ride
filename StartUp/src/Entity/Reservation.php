@@ -14,6 +14,7 @@ class Reservation
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'passager')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?Trajets $trajets = null;
 
     #[ORM\ManyToOne(inversedBy: 'reservations')]
@@ -22,6 +23,9 @@ class Reservation
 
     #[ORM\ManyToOne(inversedBy: 'passager')]
     private ?Trajetsencours $trajetsencours = null;
+
+    #[ORM\ManyToOne(inversedBy: 'passager')]
+    private ?Trajetsfini $trajetfini = null;
 
     public function getId(): ?int
     {
@@ -60,6 +64,18 @@ class Reservation
     public function setTrajetsencours(?Trajetsencours $trajetsencours): static
     {
         $this->trajetsencours = $trajetsencours;
+
+        return $this;
+    }
+
+    public function getTrajetfini(): ?Trajetsfini
+    {
+        return $this->trajetfini;
+    }
+
+    public function setTrajetfini(?Trajetsfini $trajetfini): static
+    {
+        $this->trajetfini = $trajetfini;
 
         return $this;
     }

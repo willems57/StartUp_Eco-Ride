@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\TrajetsfiniRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -25,6 +27,17 @@ class Trajetsfini
 
     #[ORM\Column]
     private ?int $duree = null;
+
+    /**
+     * @var Collection<int, Reservation>
+     */
+    #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'trajetfini')]
+    private Collection $passager;
+
+    public function __construct()
+    {
+        $this->passager = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -75,6 +88,36 @@ class Trajetsfini
     public function setDuree(int $duree): static
     {
         $this->duree = $duree;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Reservation>
+     */
+    public function getPassager(): Collection
+    {
+        return $this->passager;
+    }
+
+    public function addPassager(Reservation $passager): static
+    {
+        if (!$this->passager->contains($passager)) {
+            $this->passager->add($passager);
+            $passager->setTrajetfini($this);
+        }
+
+        return $this;
+    }
+
+    public function removePassager(Reservation $passager): static
+    {
+        if ($this->passager->removeElement($passager)) {
+            // set the owning side to null (unless already changed)
+            if ($passager->getTrajetfini() === $this) {
+                $passager->setTrajetfini(null);
+            }
+        }
 
         return $this;
     }
