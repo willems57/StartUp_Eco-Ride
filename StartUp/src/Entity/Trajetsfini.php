@@ -42,9 +42,16 @@ class Trajetsfini
     #[ORM\JoinColumn(nullable: false)]
     private ?Voiture $voiture = null;
 
+    /**
+     * @var Collection<int, Avis>
+     */
+    #[ORM\OneToMany(targetEntity: Avis::class, mappedBy: 'conducteur')]
+    private Collection $avis;
+
     public function __construct()
     {
         $this->passager = new ArrayCollection();
+        $this->avis = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -150,6 +157,36 @@ class Trajetsfini
     public function setVoiture(?Voiture $voiture): static
     {
         $this->voiture = $voiture;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Avis>
+     */
+    public function getAvis(): Collection
+    {
+        return $this->avis;
+    }
+
+    public function addAvi(Avis $avi): static
+    {
+        if (!$this->avis->contains($avi)) {
+            $this->avis->add($avi);
+            $avi->setConducteur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAvi(Avis $avi): static
+    {
+        if ($this->avis->removeElement($avi)) {
+            // set the owning side to null (unless already changed)
+            if ($avi->getConducteur() === $this) {
+                $avi->setConducteur(null);
+            }
+        }
 
         return $this;
     }
