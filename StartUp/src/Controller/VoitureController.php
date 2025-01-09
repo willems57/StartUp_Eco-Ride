@@ -2,17 +2,111 @@
 
 namespace App\Controller;
 
+
+use App\Entity\Voiture;
+use App\Repository\VoitureRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+
 
 class VoitureController extends AbstractController
 {
-    #[Route('/voiture', name: 'app_voiture')]
-    public function index(): Response
+    #[Route('/api/voitures', methods: ['GET'])]
+    public function getAllVoitures(VoitureRepository $voitureRepository): JsonResponse
     {
-        return $this->render('voiture/index.html.twig', [
-            'controller_name' => 'VoitureController',
-        ]);
+        $voitures = $voitureRepository->findAll();
+
+        $data = array_map(fn(Voiture $voiture) => [
+            'id' => $voiture->getId(),
+            'marque' => $voiture->getMarque(),
+            'modele' => $voiture->getModele(),
+            'couleur' => $voiture->getCouleur(),
+            'immatriculation' => $voiture->getImmatriculation(),
+            'places' => $voiture->getNombrePlaces(),
+            'image' => $voiture->getImage(),
+        ], $voitures);
+
+        return $this->json($data);
+    }
+
+    #[Route('/api/voitures/{id}', methods: ['GET'])]
+    public function getVoitureById(int $id, VoitureRepository $voitureRepository): JsonResponse
+    {
+        $voiture = $voitureRepository->find($id);
+
+        if (!$voiture) {
+            return $this->json(['error' => 'Voiture not found'], 404);
+        }
+
+        $data = [
+            'id' => $voiture->getId(),
+            'marque' => $voiture->getMarque(),
+            'modele' => $voiture->getModele(),
+            'couleur' => $voiture->getCouleur(),
+            'immatriculation' => $voiture->getImmatriculation(),
+            'places' => $voiture->getNombrePlaces(),
+            'image' => $voiture->getImage(),
+        ];
+
+        return $this->json($data);
+    }
+
+    #[Route('/api/voitures', methods: ['POST'])]
+    public function createVoiture(Request $request, EntityManagerInterface $em): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+
+        $voiture = new Voiture();
+        $voiture->setMarque($data['marque']);
+        $voiture->setModele($data['modele']);
+        $voiture->setCouleur($data['couleur']);
+        $voiture->setImmatriculation($data['immatriculation']);
+        $voiture->setNombrePlaces($data['places']);
+        $voiture->setImage($data['image']);
+
+        $em->persist($voiture);
+        $em->flush();
+
+        return $this->json(['status' => 'Voiture created'], 201);
+    }
+
+    #[Route('/api/voitures/{id}', methods: ['PUT'])]
+    public function updateVoiture(int $id, Request $request, VoitureRepository $voitureRepository, EntityManagerInterface $em): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $voiture = $voitureRepository->find($id);
+
+        if (!$voiture) {
+            return $this->json(['error' => 'Voiture not found'], 404);
+        }
+
+        $voiture->setMarque($data['marque'] ?? $voiture->getMarque());
+        $voiture->setModele($data['modele'] ?? $voiture->getModele());
+        $voiture->setCouleur($data['couleur'] ?? $voiture->getCouleur());
+        $voiture->setImmatriculation($data['immatriculation'] ?? $voiture->getImmatriculation());
+        $voiture->setNombrePlaces($data['places'] ?? $voiture->getNombrePlaces());
+        $voiture->setImage($data['image'] ?? $voiture->getImage());
+
+        $em->flush();
+
+        return $this->json(['status' => 'Voiture updated'], 200);
+    }
+
+    #[Route('/api/voitures/{id}', methods: ['DELETE'])]
+    public function deleteVoiture(int $id, VoitureRepository $voitureRepository, EntityManagerInterface $em): JsonResponse
+    {
+        $voiture = $voitureRepository->find($id);
+
+        if (!$voiture) {
+            return $this->json(['error' => 'Voiture not found'], 404);
+        }
+
+        $em->remove($voiture);
+        $em->flush();
+
+        return $this->json(['status' => 'Voiture deleted'], 200);
     }
 }
