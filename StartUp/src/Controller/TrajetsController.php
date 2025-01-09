@@ -34,7 +34,7 @@ class TrajetsController extends AbstractController
                 
                 'conducteur' => [
                     'id' => $trajets->getConducteur()->getId(),
-                    'nom' => $trajets->getConducteur(),
+                    'nom' => $trajets->getConducteur()->getfirstName(),
                     'email' => $trajets->getConducteur()->getEmail(),
                 ],
                 'voiture' => [

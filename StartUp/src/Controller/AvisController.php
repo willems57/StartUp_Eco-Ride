@@ -22,7 +22,7 @@ class AvisController extends AbstractController
         $avis = new Avis();
         $avis->setName($data['name']);
         $avis->setCommentaire($data['commentaire']);
-        $avis->setDate(new \DateTime($data['date']));
+        $avis->setcreatedAT(new \DateTimeImmutable($data['date']));
         $avis->setConducteur($data['conducteur']);
 
         $em->persist($avis);
@@ -41,7 +41,7 @@ class AvisController extends AbstractController
             'id' => $avis->getId(),
             'name' => $avis->getName(),
             'commentaire' => $avis->getCommentaire(),
-            'date' => $avis->getDate()->format('Y-m-d'),
+            'date' => $avis->getcreatedAt()->format('Y-m-d'),
             'conducteur' => $avis->getConducteur(),
         ], $avis);
 

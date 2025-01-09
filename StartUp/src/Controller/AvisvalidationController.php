@@ -23,7 +23,7 @@ class AvisvalidationController extends AbstractController
         $avisvalidation = new Avisvalidation();
         $avisvalidation->setName($data['name']);
         $avisvalidation->setCommentaire($data['commentaire']);
-        $avisvalidation->setDate(new \DateTime($data['date']));
+        $avisvalidation->setcreatedAt(new \DateTimeImmutable($data['date']));
         $avisvalidation->setConducteur($data['conducteur']);
 
         $em->persist($avisvalidation);
@@ -42,7 +42,7 @@ class AvisvalidationController extends AbstractController
             'id' => $avisvalidation->getId(),
             'name' => $avisvalidation->getName(),
             'commentaire' => $avisvalidation->getCommentaire(),
-            'date' => $avisvalidation->getDate()->format('Y-m-d'),
+            'date' => $avisvalidation->getcreatedAt()->format('Y-m-d'),
             'conducteur' => $avisvalidation->getConducteur(),
         ], $avisvalidation);
 

@@ -24,8 +24,8 @@ class VoitureController extends AbstractController
             'marque' => $voiture->getMarque(),
             'modele' => $voiture->getModele(),
             'couleur' => $voiture->getCouleur(),
-            'immatriculation' => $voiture->getImmatriculation(),
-            'places' => $voiture->getNombrePlaces(),
+            'immatriculation' => $voiture->getvoiture(),
+            'places' => $voiture->getPlace(),
             'image' => $voiture->getImage(),
         ], $voitures);
 
@@ -63,8 +63,8 @@ class VoitureController extends AbstractController
         $voiture->setMarque($data['marque']);
         $voiture->setModele($data['modele']);
         $voiture->setCouleur($data['couleur']);
-        $voiture->setImmatriculation($data['immatriculation']);
-        $voiture->setNombrePlaces($data['places']);
+        $voiture->setvoiture($data['immatriculation']);
+        $voiture->setPlace($data['places']);
         $voiture->setImage($data['image']);
 
         $em->persist($voiture);

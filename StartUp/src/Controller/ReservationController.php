@@ -32,10 +32,9 @@ class ReservationController extends AbstractController
                 ],
                 'passager' => [
                     'id' => $reservation->getUser()->getId(),
-                    'nom' => $reservation->getUser()->getNom(),
+                    'nom' => $reservation->getUser()->getfirstName(),
                     'email' => $reservation->getUser()->getEmail(),
                 ],
-                'statut' => $reservation->getStatut(),
             ];
         }, $reservations);
 
@@ -68,7 +67,6 @@ class ReservationController extends AbstractController
         $reservation = new Reservation();
         $reservation->setTrajets($trajets);
         $reservation->setUser($user);
-        $reservation->setStatut($data['statut'] ?? 'en attente');
 
         // Réduire le nombre de places disponibles
         $trajets->setPlacesDisponibles($trajets->getPlacesDisponibles() - 1);
