@@ -54,10 +54,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Trajetsfini::class, mappedBy: 'conducteur')]
     private Collection $conducteur;
 
+    /**
+     * @var Collection<int, Trajetsencours>
+     */
+    #[ORM\OneToMany(targetEntity: Trajetsencours::class, mappedBy: 'conducteur')]
+    private Collection $trajetsencours;
+
+    /**
+     * @var Collection<int, Trajets>
+     */
+    #[ORM\OneToMany(targetEntity: Trajets::class, mappedBy: 'conducteur')]
+    private Collection $trajets;
+
     public function __construct()
     {
         $this->reservations = new ArrayCollection();
         $this->conducteur = new ArrayCollection();
+        $this->trajetsencours = new ArrayCollection();
+        $this->trajets = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -224,6 +238,66 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($conducteur->getConducteur() === $this) {
                 $conducteur->setConducteur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Trajetsencours>
+     */
+    public function getTrajetsencours(): Collection
+    {
+        return $this->trajetsencours;
+    }
+
+    public function addTrajetsencour(Trajetsencours $trajetsencour): static
+    {
+        if (!$this->trajetsencours->contains($trajetsencour)) {
+            $this->trajetsencours->add($trajetsencour);
+            $trajetsencour->setConducteur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTrajetsencour(Trajetsencours $trajetsencour): static
+    {
+        if ($this->trajetsencours->removeElement($trajetsencour)) {
+            // set the owning side to null (unless already changed)
+            if ($trajetsencour->getConducteur() === $this) {
+                $trajetsencour->setConducteur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Trajets>
+     */
+    public function getTrajets(): Collection
+    {
+        return $this->trajets;
+    }
+
+    public function addTrajet(Trajets $trajet): static
+    {
+        if (!$this->trajets->contains($trajet)) {
+            $this->trajets->add($trajet);
+            $trajet->setConducteur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTrajet(Trajets $trajet): static
+    {
+        if ($this->trajets->removeElement($trajet)) {
+            // set the owning side to null (unless already changed)
+            if ($trajet->getConducteur() === $this) {
+                $trajet->setConducteur(null);
             }
         }
 

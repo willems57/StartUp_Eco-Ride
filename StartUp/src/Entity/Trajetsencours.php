@@ -34,6 +34,12 @@ class Trajetsencours
     #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'trajetsencours')]
     private Collection $passager;
 
+    #[ORM\ManyToOne(inversedBy: 'trajetsencours')]
+    private ?User $conducteur = null;
+
+    #[ORM\ManyToOne(inversedBy: 'trajetsencours')]
+    private ?Voiture $voiture = null;
+
     public function __construct()
     {
         $this->passager = new ArrayCollection();
@@ -118,6 +124,30 @@ class Trajetsencours
                 $passager->setTrajetsencours(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getConducteur(): ?User
+    {
+        return $this->conducteur;
+    }
+
+    public function setConducteur(?User $conducteur): static
+    {
+        $this->conducteur = $conducteur;
+
+        return $this;
+    }
+
+    public function getVoiture(): ?Voiture
+    {
+        return $this->voiture;
+    }
+
+    public function setVoiture(?Voiture $voiture): static
+    {
+        $this->voiture = $voiture;
 
         return $this;
     }

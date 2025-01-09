@@ -49,9 +49,23 @@ class Voiture
     #[ORM\OneToMany(targetEntity: Trajetsfini::class, mappedBy: 'voiture')]
     private Collection $trajetsfinis;
 
+    /**
+     * @var Collection<int, Trajetsencours>
+     */
+    #[ORM\OneToMany(targetEntity: Trajetsencours::class, mappedBy: 'voiture')]
+    private Collection $trajetsencours;
+
+    /**
+     * @var Collection<int, Trajets>
+     */
+    #[ORM\OneToMany(targetEntity: Trajets::class, mappedBy: 'voiture')]
+    private Collection $trajets;
+
     public function __construct()
     {
         $this->trajetsfinis = new ArrayCollection();
+        $this->trajetsencours = new ArrayCollection();
+        $this->trajets = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -191,6 +205,66 @@ class Voiture
             // set the owning side to null (unless already changed)
             if ($trajetsfini->getVoiture() === $this) {
                 $trajetsfini->setVoiture(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Trajetsencours>
+     */
+    public function getTrajetsencours(): Collection
+    {
+        return $this->trajetsencours;
+    }
+
+    public function addTrajetsencour(Trajetsencours $trajetsencour): static
+    {
+        if (!$this->trajetsencours->contains($trajetsencour)) {
+            $this->trajetsencours->add($trajetsencour);
+            $trajetsencour->setVoiture($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTrajetsencour(Trajetsencours $trajetsencour): static
+    {
+        if ($this->trajetsencours->removeElement($trajetsencour)) {
+            // set the owning side to null (unless already changed)
+            if ($trajetsencour->getVoiture() === $this) {
+                $trajetsencour->setVoiture(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Trajets>
+     */
+    public function getTrajets(): Collection
+    {
+        return $this->trajets;
+    }
+
+    public function addTrajet(Trajets $trajet): static
+    {
+        if (!$this->trajets->contains($trajet)) {
+            $this->trajets->add($trajet);
+            $trajet->setVoiture($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTrajet(Trajets $trajet): static
+    {
+        if ($this->trajets->removeElement($trajet)) {
+            // set the owning side to null (unless already changed)
+            if ($trajet->getVoiture() === $this) {
+                $trajet->setVoiture(null);
             }
         }
 
