@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\TrajetsRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -28,6 +30,17 @@ class Trajets
 
     #[ORM\Column]
     private ?int $prix = null;
+
+    /**
+     * @var Collection<int, Reservation>
+     */
+    #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'trajets')]
+    private Collection $passager;
+
+    public function __construct()
+    {
+        $this->passager = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -90,6 +103,36 @@ class Trajets
     public function setPrix(int $prix): static
     {
         $this->prix = $prix;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Reservation>
+     */
+    public function getPassager(): Collection
+    {
+        return $this->passager;
+    }
+
+    public function addPassager(Reservation $passager): static
+    {
+        if (!$this->passager->contains($passager)) {
+            $this->passager->add($passager);
+            $passager->setTrajets($this);
+        }
+
+        return $this;
+    }
+
+    public function removePassager(Reservation $passager): static
+    {
+        if ($this->passager->removeElement($passager)) {
+            // set the owning side to null (unless already changed)
+            if ($passager->getTrajets() === $this) {
+                $passager->setTrajets(null);
+            }
+        }
 
         return $this;
     }
