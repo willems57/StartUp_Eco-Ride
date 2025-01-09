@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\TrajetsencoursRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -25,6 +27,17 @@ class Trajetsencours
 
     #[ORM\Column]
     private ?int $duree = null;
+
+    /**
+     * @var Collection<int, Reservation>
+     */
+    #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'trajetsencours')]
+    private Collection $passager;
+
+    public function __construct()
+    {
+        $this->passager = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -75,6 +88,36 @@ class Trajetsencours
     public function setDuree(int $duree): static
     {
         $this->duree = $duree;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Reservation>
+     */
+    public function getPassager(): Collection
+    {
+        return $this->passager;
+    }
+
+    public function addPassager(Reservation $passager): static
+    {
+        if (!$this->passager->contains($passager)) {
+            $this->passager->add($passager);
+            $passager->setTrajetsencours($this);
+        }
+
+        return $this;
+    }
+
+    public function removePassager(Reservation $passager): static
+    {
+        if ($this->passager->removeElement($passager)) {
+            // set the owning side to null (unless already changed)
+            if ($passager->getTrajetsencours() === $this) {
+                $passager->setTrajetsencours(null);
+            }
+        }
 
         return $this;
     }
