@@ -48,9 +48,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'user')]
     private Collection $reservations;
 
+    /**
+     * @var Collection<int, Trajetsfini>
+     */
+    #[ORM\OneToMany(targetEntity: Trajetsfini::class, mappedBy: 'conducteur')]
+    private Collection $conducteur;
+
     public function __construct()
     {
         $this->reservations = new ArrayCollection();
+        $this->conducteur = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -187,6 +194,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($reservation->getUser() === $this) {
                 $reservation->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Trajetsfini>
+     */
+    public function getConducteur(): Collection
+    {
+        return $this->conducteur;
+    }
+
+    public function addConducteur(Trajetsfini $conducteur): static
+    {
+        if (!$this->conducteur->contains($conducteur)) {
+            $this->conducteur->add($conducteur);
+            $conducteur->setConducteur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeConducteur(Trajetsfini $conducteur): static
+    {
+        if ($this->conducteur->removeElement($conducteur)) {
+            // set the owning side to null (unless already changed)
+            if ($conducteur->getConducteur() === $this) {
+                $conducteur->setConducteur(null);
             }
         }
 

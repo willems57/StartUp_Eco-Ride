@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\VoitureRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -40,6 +42,17 @@ class Voiture
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = null;
+
+    /**
+     * @var Collection<int, Trajetsfini>
+     */
+    #[ORM\OneToMany(targetEntity: Trajetsfini::class, mappedBy: 'voiture')]
+    private Collection $trajetsfinis;
+
+    public function __construct()
+    {
+        $this->trajetsfinis = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -150,6 +163,36 @@ class Voiture
     public function setImage(?string $image): static
     {
         $this->image = $image;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Trajetsfini>
+     */
+    public function getTrajetsfinis(): Collection
+    {
+        return $this->trajetsfinis;
+    }
+
+    public function addTrajetsfini(Trajetsfini $trajetsfini): static
+    {
+        if (!$this->trajetsfinis->contains($trajetsfini)) {
+            $this->trajetsfinis->add($trajetsfini);
+            $trajetsfini->setVoiture($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTrajetsfini(Trajetsfini $trajetsfini): static
+    {
+        if ($this->trajetsfinis->removeElement($trajetsfini)) {
+            // set the owning side to null (unless already changed)
+            if ($trajetsfini->getVoiture() === $this) {
+                $trajetsfini->setVoiture(null);
+            }
+        }
 
         return $this;
     }
