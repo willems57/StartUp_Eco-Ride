@@ -48,6 +48,9 @@ class Trajetsfini
     #[ORM\OneToMany(targetEntity: Avis::class, mappedBy: 'conducteur')]
     private Collection $avis;
 
+    #[ORM\Column]
+    private ?int $prix = null;
+
     public function __construct()
     {
         $this->passager = new ArrayCollection();
@@ -187,6 +190,18 @@ class Trajetsfini
                 $avi->setConducteur(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPrix(): ?int
+    {
+        return $this->prix;
+    }
+
+    public function setPrix(int $prix): static
+    {
+        $this->prix = $prix;
 
         return $this;
     }
