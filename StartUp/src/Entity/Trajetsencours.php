@@ -40,6 +40,9 @@ class Trajetsencours
     #[ORM\ManyToOne(inversedBy: 'trajetsencours')]
     private ?Voiture $voiture = null;
 
+    #[ORM\Column]
+    private ?int $prix = null;
+
     public function __construct()
     {
         $this->passager = new ArrayCollection();
@@ -148,6 +151,18 @@ class Trajetsencours
     public function setVoiture(?Voiture $voiture): static
     {
         $this->voiture = $voiture;
+
+        return $this;
+    }
+
+    public function getPrix(): ?int
+    {
+        return $this->prix;
+    }
+
+    public function setPrix(int $prix): static
+    {
+        $this->prix = $prix;
 
         return $this;
     }
