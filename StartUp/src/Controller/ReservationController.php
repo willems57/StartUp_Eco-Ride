@@ -3,11 +3,15 @@
 namespace App\Controller;
 
 use App\Entity\Reservation;
-use App\Entity\Trajet;
+use App\Entity\Trajets;
 use App\Entity\User;
+use App\Entity\Trajetsfini;
+use App\Entity\Trajetsencours;
 use App\Repository\ReservationRepository;
 use App\Repository\TrajetsRepository;
 use App\Repository\UserRepository;
+use App\Repository\TrajetsfiniRepository;
+use App\Repository\TrajetsencoursRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,7 +20,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class ReservationController extends AbstractController
 {
-    #[Route('/api/reservation', methods: ['GET'])]
+    #[Route('/api/reservations', methods: ['GET'])]
     public function getAllReservations(ReservationRepository $reservationRepository): JsonResponse
     {
         $reservations = $reservationRepository->findAll();
@@ -24,28 +28,27 @@ class ReservationController extends AbstractController
         $data = array_map(function (Reservation $reservation) {
             return [
                 'id' => $reservation->getId(),
-                'trajets' => [
-                    'id' => $reservation->getTrajets()->getId(),
-                    'depart' => $reservation->getTrajets()->getDepart(),
-                    'arrive' => $reservation->getTrajets()->getArrive(),
-                    'date' => $reservation->getTrajets()->getDate()->format('Y-m-d H:i:s'),
-                ],
+                'trajets' => $reservation->getTrajets() ? $this->getTrajetsData($reservation->getTrajets()) : null,
                 'passager' => [
                     'id' => $reservation->getUser()->getId(),
-                    'nom' => $reservation->getUser()->getfirstName(),
+                    'nom' => $reservation->getUser()->getfirstname(),
                     'email' => $reservation->getUser()->getEmail(),
                 ],
+                'trajetsfini' => $reservation->getTrajetfini() ? $this->getTrajetsFiniData($reservation->getTrajetfini()) : null,
+                'trajetsencours' => $reservation->getTrajetsencours() ? $this->getTrajetsEncoursData($reservation->getTrajetsencours()) : null,
             ];
         }, $reservations);
 
         return $this->json($data);
     }
 
-    #[Route('/api/reservation', methods: ['POST'])]
+    #[Route('/api/reservations', methods: ['POST'])]
     public function createReservation(
         Request $request,
         TrajetsRepository $trajetsRepository,
         UserRepository $userRepository,
+        TrajetsfiniRepository $trajetsfiniRepository,
+        TrajetsencoursRepository $trajetsencoursRepository,
         EntityManagerInterface $em
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
@@ -68,7 +71,22 @@ class ReservationController extends AbstractController
         $reservation->setTrajets($trajets);
         $reservation->setUser($user);
 
-        // Réduire le nombre de places disponibles
+        if (isset($data['trajetsfini_id'])) {
+            $trajetsfini = $trajetsfiniRepository->find($data['trajetsfini_id']);
+            if (!$trajetsfini) {
+                return $this->json(['error' => 'Trajetsfini not found'], 404);
+            }
+            $reservation->setTrajetfini($trajetsfini);
+        }
+
+        if (isset($data['trajetsencours_id'])) {
+            $trajetsencours = $trajetsencoursRepository->find($data['trajetsencours_id']);
+            if (!$trajetsencours) {
+                return $this->json(['error' => 'Trajetsencours not found'], 404);
+            }
+            $reservation->setTrajetsencours($trajetsencours);
+        }
+
         $trajets->setPlacesDisponibles($trajets->getPlacesDisponibles() - 1);
 
         $em->persist($reservation);
@@ -77,11 +95,13 @@ class ReservationController extends AbstractController
         return $this->json(['status' => 'Reservation created'], 201);
     }
 
-    #[Route('/api/reservation/{id}', methods: ['PUT'])]
+    #[Route('/api/reservations/{id}', methods: ['PUT'])]
     public function updateReservation(
         int $id,
         Request $request,
         ReservationRepository $reservationRepository,
+        TrajetsfiniRepository $trajetsfiniRepository,
+        TrajetsencoursRepository $trajetsencoursRepository,
         EntityManagerInterface $em
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
@@ -91,14 +111,29 @@ class ReservationController extends AbstractController
             return $this->json(['error' => 'Reservation not found'], 404);
         }
 
-        $reservation->setStatut($data['statut'] ?? $reservation->getStatut());
+        if (isset($data['trajetsfini_id'])) {
+            $trajetsfini = $trajetsfiniRepository->find($data['trajetsfini_id']);
+            if (!$trajetsfini) {
+                return $this->json(['error' => 'Trajetsfini not found'], 404);
+            }
+            $reservation->setTrajetsfini($trajetsfini);
+        }
+
+        if (isset($data['trajetsencours_id'])) {
+            $trajetsencours = $trajetsencoursRepository->find($data['trajetsencours_id']);
+            if (!$trajetsencours) {
+                return $this->json(['error' => 'Trajetsencours not found'], 404);
+            }
+            $reservation->setTrajetsencours($trajetsencours);
+        }
+       
 
         $em->flush();
 
         return $this->json(['status' => 'Reservation updated'], 200);
     }
 
-    #[Route('/api/reservation/{id}', methods: ['DELETE'])]
+    #[Route('/api/reservations/{id}', methods: ['DELETE'])]
     public function deleteReservation(
         int $id,
         ReservationRepository $reservationRepository,
@@ -110,13 +145,42 @@ class ReservationController extends AbstractController
             return $this->json(['error' => 'Reservation not found'], 404);
         }
 
-        // Restaurer le nombre de places disponibles
-        $trajets = $reservation->getTrajet();
-        $trajets->setPlacesDisponibles($trajets->getPlacesDisponibles() + 1);
+        $trajet = $reservation->getTrajets();
+        $trajet->setPlacesDisponibles($trajet->getPlacesDisponibles() + 1);
 
         $em->remove($reservation);
         $em->flush();
 
         return $this->json(['status' => 'Reservation deleted'], 200);
+    }
+
+    private function getTrajetsData(Trajets $trajets): array
+    {
+        return [
+            'id' => $trajets->getId(),
+            'depart' => $trajets->getDepart(),
+            'arrive' => $trajets->getArrive(),
+            'date' => $trajets->getDate()->format('Y-m-d H:i:s'),
+        ];
+    }
+
+    private function getTrajetsFiniData(Trajetsfini $trajetsfini): array
+    {
+        return [
+            'id' => $trajetsfini->getId(),
+            'depart' => $trajetsfini->getDepart(),
+            'arrive' => $trajetsfini->getArrive(),
+            'date' => $trajetsfini->getDate()->format('Y-m-d H:i:s'),
+        ];
+    }
+
+    private function getTrajetsEncoursData(Trajetsencours $trajetsencours): array
+    {
+        return [
+            'id' => $trajetsencours->getId(),
+            'depart' => $trajetsencours->getDepart(),
+            'arrive' => $trajetsencours->getArrive(),
+            'date' => $trajetsencours->getDate()->format('Y-m-d H:i:s'),
+        ];
     }
 }
