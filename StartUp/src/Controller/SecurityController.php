@@ -15,6 +15,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 
+
 #[Route('/api/security', name: 'api_security_')]
 class SecurityController extends AbstractController
 {
@@ -37,31 +38,33 @@ class SecurityController extends AbstractController
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
 
-        // Validation des données d'entrée
+        // Validation des données obligatoires
         if (!isset($data['email'], $data['password'])) {
             return new JsonResponse(['error' => 'Email and password are required'], Response::HTTP_BAD_REQUEST);
         }
 
-        // Vérifie si l'utilisateur existe déjà
+        // Vérification des doublons
         if ($userRepository->findOneBy(['email' => $data['email']])) {
             return new JsonResponse(['error' => 'This email is already registered'], Response::HTTP_CONFLICT);
         }
 
+        // Création de l'utilisateur
         $user = new User();
         $user->setEmail($data['email']);
         $user->setPassword($this->passwordHasher->hashPassword($user, $data['password']));
-        $user->setRoles(['ROLE_USER']);
+        $user->setRoles(['ROLE_USER']); // Rôle par défaut
         $user->setFirstName($data['firstName'] ?? null);
         $user->setLastName($data['lastName'] ?? null);
         $user->setCredits($data['credits'] ?? 20);
+        $user->setApiToken(bin2hex(random_bytes(32))); // Génération d'un token unique
 
-        // Valide l'entité
+        // Validation de l'entité
         $errors = $validator->validate($user);
         if (count($errors) > 0) {
             return new JsonResponse(['errors' => (string) $errors], Response::HTTP_BAD_REQUEST);
         }
 
-        // Sauvegarde l'utilisateur
+        // Sauvegarde en base
         $this->entityManager->persist($user);
         $this->entityManager->flush();
 
@@ -69,8 +72,10 @@ class SecurityController extends AbstractController
     }
 
     #[Route('/login', name: 'login', methods: ['POST'])]
-    public function login(Request $request, UserRepository $userRepository): JsonResponse
-    {
+    public function login(
+        Request $request,
+        UserRepository $userRepository
+    ): JsonResponse {
         $data = json_decode($request->getContent(), true);
 
         if (!isset($data['email'], $data['password'])) {
@@ -82,12 +87,12 @@ class SecurityController extends AbstractController
             return new JsonResponse(['error' => 'Invalid credentials'], Response::HTTP_UNAUTHORIZED);
         }
 
-        // Retourne une réponse avec les informations essentielles
         return new JsonResponse([
             'id' => $user->getId(),
             'email' => $user->getEmail(),
             'roles' => $user->getRoles(),
             'credits' => $user->getCredits(),
+            'apiToken' => $user->getApiToken(),
         ], Response::HTTP_OK);
     }
 
@@ -107,13 +112,14 @@ class SecurityController extends AbstractController
             'lastName' => $user->getLastName(),
             'roles' => $user->getRoles(),
             'credits' => $user->getCredits(),
+            'apiToken' => $user->getApiToken(),
         ], Response::HTTP_OK);
     }
 
     #[Route('/account/edit', name: 'account_edit', methods: ['PUT'])]
     public function editAccount(
         Request $request,
-        EntityManagerInterface $entityManager
+        ValidatorInterface $validator
     ): JsonResponse {
         $user = $this->getUser();
 
@@ -139,7 +145,13 @@ class SecurityController extends AbstractController
             $user->setPassword($this->passwordHasher->hashPassword($user, $data['password']));
         }
 
-        $entityManager->flush();
+        // Validation des changements
+        $errors = $validator->validate($user);
+        if (count($errors) > 0) {
+            return new JsonResponse(['errors' => (string) $errors], Response::HTTP_BAD_REQUEST);
+        }
+
+        $this->entityManager->flush();
 
         return new JsonResponse(['message' => 'Account updated successfully'], Response::HTTP_OK);
     }
