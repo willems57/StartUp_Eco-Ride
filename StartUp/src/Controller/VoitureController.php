@@ -27,6 +27,10 @@ class VoitureController extends AbstractController
             'immatriculation' => $voiture->getvoiture(),
             'places' => $voiture->getPlace(),
             'image' => $voiture->getImage(),
+            'user' => [
+                'id' => $voiture->getProprietaire()->getId(),
+                'email' => $voiture->getProprietaire()->getEmail(),
+            ],
         ], $voitures);
 
         return $this->json($data);
@@ -49,6 +53,10 @@ class VoitureController extends AbstractController
             'immatriculation' => $voiture->getImmatriculation(),
             'places' => $voiture->getNombrePlaces(),
             'image' => $voiture->getImage(),
+            'user' => [
+                'id' => $voiture->getUser()->getId(),
+                'email' => $voiture->getUser()->getEmail(),
+            ],
         ];
 
         return $this->json($data);
@@ -59,6 +67,11 @@ class VoitureController extends AbstractController
     {
         $data = json_decode($request->getContent(), true);
 
+        $user = $this->getUser(); // Récupérer l'utilisateur connecté
+        if (!$user) {
+            return $this->json(['error' => 'User not authenticated'], 401);
+        }
+
         $voiture = new Voiture();
         $voiture->setMarque($data['marque']);
         $voiture->setModele($data['modele']);
@@ -66,6 +79,7 @@ class VoitureController extends AbstractController
         $voiture->setvoiture($data['immatriculation']);
         $voiture->setPlace($data['places']);
         $voiture->setImage($data['image']);
+        $voiture->setProprietaire($user);
 
         $em->persist($voiture);
         $em->flush();

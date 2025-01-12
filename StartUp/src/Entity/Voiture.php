@@ -61,6 +61,9 @@ class Voiture
     #[ORM\OneToMany(targetEntity: Trajets::class, mappedBy: 'voiture')]
     private Collection $trajets;
 
+    #[ORM\ManyToOne(inversedBy: 'voitures')]
+    private ?User $proprietaire = null;
+
     public function __construct()
     {
         $this->trajetsfinis = new ArrayCollection();
@@ -267,6 +270,18 @@ class Voiture
                 $trajet->setVoiture(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getProprietaire(): ?User
+    {
+        return $this->proprietaire;
+    }
+
+    public function setProprietaire(?User $proprietaire): static
+    {
+        $this->proprietaire = $proprietaire;
 
         return $this;
     }
