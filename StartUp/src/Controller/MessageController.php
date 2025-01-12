@@ -2,17 +2,39 @@
 
 namespace App\Controller;
 
+use App\Message\CustomMessage;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+
 
 class MessageController extends AbstractController
 {
-    #[Route('/message', name: 'app_message')]
-    public function index(): Response
+    private MessageBusInterface $bus;
+
+    public function __construct(MessageBusInterface $bus)
     {
-        return $this->render('message/index.html.twig', [
-            'controller_name' => 'MessageController',
-        ]);
+        $this->bus = $bus;
+    }
+
+    #[Route('/api/send-message', methods: ['POST'])]
+    public function sendMessage(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+
+        if (!isset($data['content']) || empty($data['content'])) {
+            return new JsonResponse(['error' => 'Content is required'], 400);
+        }
+
+        if (!isset($data['email']) || !filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+            return new JsonResponse(['error' => 'Valid email is required'], 400);
+        }
+
+        $message = new CustomMessage($data['content'], $data['email']);
+        $this->bus->dispatch($message);
+
+        return new JsonResponse(['status' => 'Message sent to ' . $data['email']], 201);
     }
 }
