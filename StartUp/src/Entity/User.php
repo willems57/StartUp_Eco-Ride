@@ -72,8 +72,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Voiture::class, mappedBy: 'proprietaire')]
     private Collection $voitures;
 
+    #[ORM\Column(length: 255)]
+    private ?string $apiToken = null;
+
+    /** @throws \Exception */
     public function __construct()
     {
+        $this->apiToken = bin2hex(random_bytes(60));
         $this->reservations = new ArrayCollection();
         $this->conducteur = new ArrayCollection();
         $this->trajetsencours = new ArrayCollection();
@@ -337,6 +342,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $voiture->setProprietaire(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getApiToken(): ?string
+    {
+        return $this->apiToken;
+    }
+
+    public function setApiToken(string $apiToken): static
+    {
+        $this->apiToken = $apiToken;
 
         return $this;
     }
