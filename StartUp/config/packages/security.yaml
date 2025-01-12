@@ -25,6 +25,7 @@ security:
                 check_path: /api/security/login
                 username_path: email
                 password_path: password
+            custom_authenticator: App\Security\ApiTokenAuthentificateur
 
         # Firewall principal pour les sessions (si nécessaire)
         main:
