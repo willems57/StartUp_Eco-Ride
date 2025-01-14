@@ -33,39 +33,47 @@ class SecurityController extends AbstractController
 
 
     /**
-     * @OA\Post(
-     *     path="/api/security/registration",
-     *     summary="Enregistre un nouvel utilisateur",
-     *     description="Permet de créer un compte utilisateur avec un rôle par défaut.",
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="email", type="string", example="user@example.com"),
-     *             @OA\Property(property="password", type="string", example="password123"),
-     *             @OA\Property(property="firstName", type="string", example="John"),
-     *             @OA\Property(property="lastName", type="string", example="Doe"),
-     *             @OA\Property(property="credits", type="integer", example=20)
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=201,
-     *         description="Utilisateur enregistré avec succès",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="message", type="string", example="User registered successfully")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=400,
-     *         description="Erreur de validation des données",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="errors", type="string", example="Email and password are required")
-     *         )
-     *     )
-     * )
-     */
+ * @OA\Post(
+ *     path="/api/security/registration",
+ *     summary="Enregistre un nouvel utilisateur",
+ *     description="Permet de créer un compte utilisateur avec un rôle par défaut ou spécifié.",
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="email", type="string", example="user@example.com"),
+ *             @OA\Property(property="password", type="string", example="password123"),
+ *             @OA\Property(property="firstName", type="string", example="John"),
+ *             @OA\Property(property="lastName", type="string", example="Doe"),
+ *             @OA\Property(property="credits", type="integer", example=20),
+ *             @OA\Property(
+ *                 property="roles",
+ *                 type="array",
+ *                 @OA\Items(type="string"),
+ *                 example={"ROLE_USER"}
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=201,
+ *         description="Utilisateur enregistré avec succès",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="message", type="string", example="User registered successfully")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Erreur de validation des données",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="errors", type="string", example="Invalid data")
+ *         )
+ *     )
+ * )
+ */
+
+
     #[Route('/registration', name: 'registration', methods: ['POST'])]
     public function register(
         Request $request,
@@ -84,11 +92,22 @@ class SecurityController extends AbstractController
             return new JsonResponse(['error' => 'This email is already registered'], Response::HTTP_CONFLICT);
         }
 
+        // Rôles valides disponibles
+        $validRoles = ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_EMPLOYER'];
+
+        // Validation des rôles fournis
+        $roles = $data['roles'] ?? ['ROLE_USER']; // Rôle par défaut : ROLE_USER
+        foreach ($roles as $role) {
+            if (!in_array($role, $validRoles, true)) {
+                return new JsonResponse(['error' => "Invalid role provided: $role"], Response::HTTP_BAD_REQUEST);
+            }
+        }
+
         // Création de l'utilisateur
         $user = new User();
         $user->setEmail($data['email']);
         $user->setPassword($this->passwordHasher->hashPassword($user, $data['password']));
-        $user->setRoles(['ROLE_USER']); // Rôle par défaut
+        $user->setRoles($roles);
         $user->setFirstName($data['firstName'] ?? null);
         $user->setLastName($data['lastName'] ?? null);
         $user->setCredits($data['credits'] ?? 20);
@@ -107,40 +126,41 @@ class SecurityController extends AbstractController
         return new JsonResponse(['message' => 'User registered successfully'], Response::HTTP_CREATED);
     }
 
+
     /**
-     * @OA\Post(
-     *     path="/api/security/login",
-     *     summary="Connecte un utilisateur",
-     *     description="Permet de s'authentifier avec email et mot de passe.",
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="email", type="string", example="user@example.com"),
-     *             @OA\Property(property="password", type="string", example="password123")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Authentification réussie",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="id", type="integer", example=1),
-     *             @OA\Property(property="email", type="string", example="user@example.com"),
-     *             @OA\Property(property="roles", type="array", @OA\Items(type="string"), example={"ROLE_USER"}),
-     *             @OA\Property(property="apiToken", type="string", example="abcdef123456")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=401,
-     *         description="Identifiants invalides",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="error", type="string", example="Invalid credentials")
-     *         )
-     *     )
-     * )
-     */
+ * @OA\Post(
+ *     path="/api/security/login",
+ *     summary="Connecte un utilisateur",
+ *     description="Permet de s'authentifier avec email et mot de passe.",
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="email", type="string", example="user@example.com"),
+ *             @OA\Property(property="password", type="string", example="password123")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Authentification réussie",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="id", type="integer", example=1),
+ *             @OA\Property(property="email", type="string", example="user@example.com"),
+ *             @OA\Property(property="roles", type="array", @OA\Items(type="string"), example={"ROLE_USER"}),
+ *             @OA\Property(property="apiToken", type="string", example="abcdef123456")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=401,
+ *         description="Identifiants invalides",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="error", type="string", example="Invalid credentials")
+ *         )
+ *     )
+ * )
+ */
     #[Route('/login', name: 'login', methods: ['POST'])]
     public function login(
         Request $request,
