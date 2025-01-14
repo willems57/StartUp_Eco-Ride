@@ -43,6 +43,7 @@ security:
     access_control:
         - { path: ^/api/security/registration, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/security/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/doc, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/security/account/me, roles: ROLE_USER }
         - { path: ^/api/security/account/edit, roles: ROLE_USER }
 
