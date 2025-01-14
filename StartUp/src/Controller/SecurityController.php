@@ -13,6 +13,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use OpenApi\Annotations as OA;
 
 
 
@@ -30,6 +31,41 @@ class SecurityController extends AbstractController
         $this->passwordHasher = $passwordHasher;
     }
 
+
+    /**
+     * @OA\Post(
+     *     path="/api/security/registration",
+     *     summary="Enregistre un nouvel utilisateur",
+     *     description="Permet de créer un compte utilisateur avec un rôle par défaut.",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="email", type="string", example="user@example.com"),
+     *             @OA\Property(property="password", type="string", example="password123"),
+     *             @OA\Property(property="firstName", type="string", example="John"),
+     *             @OA\Property(property="lastName", type="string", example="Doe"),
+     *             @OA\Property(property="credits", type="integer", example=20)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Utilisateur enregistré avec succès",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="User registered successfully")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Erreur de validation des données",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="errors", type="string", example="Email and password are required")
+     *         )
+     *     )
+     * )
+     */
     #[Route('/registration', name: 'registration', methods: ['POST'])]
     public function register(
         Request $request,
@@ -71,6 +107,40 @@ class SecurityController extends AbstractController
         return new JsonResponse(['message' => 'User registered successfully'], Response::HTTP_CREATED);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/security/login",
+     *     summary="Connecte un utilisateur",
+     *     description="Permet de s'authentifier avec email et mot de passe.",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="email", type="string", example="user@example.com"),
+     *             @OA\Property(property="password", type="string", example="password123")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Authentification réussie",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="id", type="integer", example=1),
+     *             @OA\Property(property="email", type="string", example="user@example.com"),
+     *             @OA\Property(property="roles", type="array", @OA\Items(type="string"), example={"ROLE_USER"}),
+     *             @OA\Property(property="apiToken", type="string", example="abcdef123456")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Identifiants invalides",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="error", type="string", example="Invalid credentials")
+     *         )
+     *     )
+     * )
+     */
     #[Route('/login', name: 'login', methods: ['POST'])]
     public function login(
         Request $request,
