@@ -3,16 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
     <title>Document</title>
+
+
 </head>
 <body>
-    <header>le menu</header>
 
-    <main id="main-page">
+    <header>
+    
+        <nav class="navbar navbar-expand-lg bg-primary">
+            <div class="container-fluid">
+              <a class="navbar-brand" href="/">Eco Ride</a>
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                  <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/trajets" data-show="connected">Accès aux covoiturages</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/contact">Contact</a>
+                  </li>
+                  <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      Compte
+                    </a>
+                    <ul class="dropdown-menu">
+                      <li><a class="dropdown-item" href="/utilisateurs">Utilisateur</a></li>
+                      <li><a class="dropdown-item" href="/employers">Employers</a></li>
+                      <li><a class="dropdown-item" href="/administrateur">Admin</a></li>
+                    </ul>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/avis">Avis</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/signin">Connexion</a>
+                  </li>
+                  <li class="nav-item">
+                    <button class="nav-link" id="signout-btn">Deconnexion</button>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </nav>
+    
+    </header>
 
-    </main>
 
-    <footer></footer>
-    <script type="module" src="Router/router.js"></script>
+<main id="main-page">
+  
+</main>
+
+
+<footer class="bg-primary text-center footer bg-primary">
+    <div class="row">
+        <div class="col-12 col-lg-4">
+            <p>contacte: <br/>
+              ecoride@ecoeco.fr <br/>
+              02 45 43 5900 <br/>
+            </p>
+        </div>
+        <div class="col-6 col-lg-4">
+            <p>Siege Eco Ride <br/>
+               25 rue riede <br/>
+               35380 Paimpont <br/>
+            </p>
+        </div>
+        <div class="col-6 col-lg-4">
+                <a class="nav-link" href="/legale">Mention legale</a>
+        </div>
+    </div>
+        </footer>
+
+       
+<script type="module" src="Router/router.js"></script>
+<script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>
