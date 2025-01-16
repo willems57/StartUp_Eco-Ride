@@ -47,6 +47,7 @@ security:
         - { path: ^/api/security/account/me, roles: ROLE_USER }
         - { path: ^/api/security/account/edit, roles: ROLE_USER }
         - { path: ^/api/trajets, roles: PUBLIC_ACCESS }
+        - { path: ^/api/contacts, roles: PUBLIC_ACCESS }
 
 when@test:
     security:
