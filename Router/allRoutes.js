@@ -6,6 +6,7 @@ export const allRoutes = [
     new Route("/signin", "signin", "/auth/signin.html"),
     new Route("/signup", "signup", "/auth/signup.html"),
     new Route("/contact", "contact", "/pages/contact.html"),
+    new Route("/trajets", "trajets", "/pages/covoiturage/trajets.html"),
     new Route("/avis", "Avis", "/pages/avis.html"),
 
 ];
