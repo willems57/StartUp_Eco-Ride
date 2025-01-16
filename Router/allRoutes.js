@@ -12,6 +12,7 @@ export const allRoutes = [
     new Route("/signup2", "signupA", "/admin/signup2.html"),
     new Route("/suspendu", "suspendu", "/admin/suspendu.html"),
     new Route("/utilisateurs", "utilisateurs", "/pages/utilisateurs/utilisateurs.html"),
+    new Route("/abonees", "abonees", "/admin/abonees.html"),
     new Route("/employers", "employers", "/pages/employers/employers.html"),
     new Route("/abonees", "abonees", "/admin/abonees.html"),
 
