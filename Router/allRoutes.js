@@ -7,7 +7,7 @@ export const allRoutes = [
     new Route("/signup", "signup", "/auth/signup.html", [], "/js/auth/signup.js"),
     new Route("/contact", "contact", "/pages/contact.html", [], "/js/contact.js"),
     new Route("/administrateur", "administrateur", "/admin/administrateur.html", []),
-    new Route("/trajets", "trajets", "/pages/covoiturage/trajets.html", []),
+    new Route("/trajets", "trajets", "/pages/covoiturage/trajets.html", [], "/pages/covoiturage/trajets.js"),
     new Route("/avis", "Avis", "/pages/avis.html", [], "/js/avis.js"),
     new Route("/signup2", "signupA", "/admin/signup2.html", [], "/admin/signup2.js"),
     new Route("/suspendu", "suspendu", "/admin/suspendu.html", [], "/admin/suspendu.js"),
