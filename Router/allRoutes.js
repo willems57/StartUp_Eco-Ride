@@ -13,7 +13,7 @@ export const allRoutes = [
     new Route("/suspendu", "suspendu", "/admin/suspendu.html", [], "/admin/suspendu.js"),
     new Route("/utilisateurs", "utilisateurs", "/pages/utilisateurs/utilisateurs.html", []),
     new Route("/abonees", "abonees", "/admin/abonees.html", []),
-    new Route("/employers", "employers", "/pages/employers/employers.html", []),
+    new Route("/employers", "employers", "/pages/employers/employers.html", [], "/pages/employers/employers.js"),
     new Route("/abonees", "abonees", "/admin/abonees.html", []),
 
 ];
