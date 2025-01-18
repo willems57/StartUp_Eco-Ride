@@ -1,96 +1,92 @@
-import { getToken } from "../js/script";
-//recuperation des inputs du formulaire
+import { getToken } from "../js/script.js";
+
+// Récupération des éléments HTML
 const inputNom = document.getElementById("NomInput");
 const inputPreNom = document.getElementById("PrenomInput");
 const inputRole = document.getElementById("RoleInput");
 const inputMail = document.getElementById("EmailInput");
+const inputUserId = document.getElementById("UserIdInput");
 const btnValidation = document.getElementById("btn-validation-modification");
 const formInscription = document.getElementById("formulaireInscription");
 
-
-//ajout d'un envent listener sur chaque input pour valider le formulaire
-inputNom.addEventListener("keyup", validateForm); 
+// Ajout des listeners pour valider le formulaire
+inputNom.addEventListener("keyup", validateForm);
 inputPreNom.addEventListener("keyup", validateForm);
-inputRole.addEventListener("keyup", validateForm);
 inputMail.addEventListener("keyup", validateForm);
 
-
-btnValidation.addEventListener("click", suspendreutilisateur);
-
-//Function permettant de valider tout le formulaire
-function validateForm(){
+// Valide le formulaire
+function validateForm() {
     const nomok = validateRequired(inputNom);
     const prenomok = validateRequired(inputPreNom);
-    const roleok = validateRequired(inputRole);
     const mailok = validateMail(inputMail);
 
-    if(nomok && prenomok && roleok && mailok){
-        btnValidation.disabled = false;
-    }
-    else{
-        btnValidation.disabled = true;
-    }
+    btnValidation.disabled = !(nomok && prenomok && mailok);
 }
 
-//function permettent de valider si un input est rempli
-function validateRequired(input){
-    if(input.value != ''){
+// Valide un champ requis
+function validateRequired(input) {
+    if (input.value.trim() !== "") {
         input.classList.add("is-valid");
         input.classList.remove("is-invalid");
-        return true; 
-    }
-
-    else{
+        return true;
+    } else {
         input.classList.remove("is-valid");
         input.classList.add("is-invalid");
         return false;
     }
 }
 
-//function permetant de valider si un mail est valide
-function validateMail(input){
-        //Définir mon regex
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+// Valide un email
+function validateMail(input) {
+    const emailRegex = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
+    const mailUser = input.value.trim();
 
-        const mailUser = input.value;
+    if (emailRegex.test(mailUser)) {
+        input.classList.add("is-valid");
+        input.classList.remove("is-invalid");
+        return true;
+    } else {
+        input.classList.remove("is-valid");
+        input.classList.add("is-invalid");
+        return false;
+    }
+}
 
-        if(mailUser.match(emailRegex)){
-            input.classList.add("is-valid");
-            input.classList.remove("is-invalid"); 
-            return true;
-        }
-    
-        else{
-            input.classList.remove("is-valid");
-            input.classList.add("is-invalid");
-            return false;
-        }
+// Événement sur le bouton "Modifier"
+btnValidation.addEventListener("click", suspendreUtilisateur);
+
+// Fonction pour suspendre un utilisateur
+function suspendreUtilisateur() {
+    const userId = inputUserId.value; // ID utilisateur
+    const newRole = "ROLE_SUSPENDED"; // Rôle pour suspendre l'utilisateur
+
+    if (!userId) {
+        alert("Aucun utilisateur sélectionné.");
+        return;
     }
 
+    const myHeaders = new Headers();
+    myHeaders.append("Authorization", `Bearer ${getToken()}`);
+    myHeaders.append("Content-Type", "application/json");
 
+    const raw = JSON.stringify({ roles: [newRole] });
 
-    function suspendreutilisateur(){
-                const dataForm = new FormData(formInscription);
-                myHeaders.append("X-Auth-TOKEN", getToken());
+    const requestOptions = {
+        method: "PUT",
+        headers: myHeaders,
+        body: raw,
+    };
 
-                const myHeaders = new Headers();
-myHeaders.append("Content-Type", "application/json");
-
-const raw = JSON.stringify({
-  "firstName": dataForm.get(inputNom),
-  "lastName": dataForm.get(inputPreNom),
-  "role": dataForm.get(inputRole),
-  "email": dataForm.get(inputMail)
-});
-
-const requestOptions = {
-  method: "PUT",
-  body: raw,
-  redirect: "follow"
-};
-
-fetch("http://127.0.0.1:8000/api/account/edit", requestOptions)
-  .then((response) => response.text())
-  .then((result) => console.log(result))
-  .catch((error) => console.error(error));
+    fetch(`http://127.0.0.1:8000/admin/users/${userId}/role`, requestOptions)
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(`Erreur HTTP : ${response.status}`);
+            }
+            return response.json();
+        })
+        .then((result) => {
+            console.log("Utilisateur suspendu avec succès :", result);
+            alert("Utilisateur suspendu avec succès.");
+        })
+        .catch((error) => console.error("Erreur :", error));
 }
