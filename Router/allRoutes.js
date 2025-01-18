@@ -11,10 +11,9 @@ export const allRoutes = [
     new Route("/avis", "Avis", "/pages/avis.html", [], "/js/avis.js"),
     new Route("/signup2", "signupA", "/admin/signup2.html", [], "/admin/signup2.js"),
     new Route("/suspendu", "suspendu", "/admin/suspendu.html", [], "/admin/suspendu.js"),
-    new Route("/utilisateurs", "utilisateurs", "/pages/utilisateurs/utilisateurs.html", []),
+    new Route("/utilisateurs", "utilisateurs", "/pages/utilisateurs/utilisateurs.html", [], "/pages/utilisateurs/utilisateurs.js"),
     new Route("/abonees", "abonees", "/admin/abonees.html", [], "/admin/abonees.js"),
     new Route("/employers", "employers", "/pages/employers/employers.html", [], "/pages/employers/employers.js"),
-    new Route("/abonees", "abonees", "/admin/abonees.html", []),
 
 ];
 

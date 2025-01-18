@@ -1,5 +1,5 @@
 
-export {getRole, setToken, getToken, isConnected, showAndHideElementsForRoles, RoleCookieName, tokenCookieName, signout, apiUrl, sanitizeHtml, setCookie, getCookie, eraseCookie, getInfosUser};
+export {getRole, setToken, getToken, isConnected, showAndHideElementsForRoles, RoleCookieName, tokenCookieName, signout, apiUrl, sanitizeHtml, setCookie, getCookie, eraseCookie, getInfosUser, sanitizeAllFields};
 const RoleCookieName = ("role");
 const tokenCookieName = "accesstoken";
 const signoutBtn = document.getElementById("signout-btn");
@@ -145,5 +145,11 @@ function getInfosUser(){
 
 
 
-
- 
+// Fonction pour assainir toutes les données
+function sanitizeAllFields(data) {
+    const sanitizedData = {};
+    for (const key in data) {
+        sanitizedData[key] = sanitizeHtml(data[key] || "");
+    }
+    return sanitizedData;
+  }
