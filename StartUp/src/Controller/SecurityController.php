@@ -93,7 +93,7 @@ class SecurityController extends AbstractController
         }
 
         // Rôles valides disponibles
-        $validRoles = ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_EMPLOYER'];
+        $validRoles = ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_EMPLOYER', "ROLE_SUSPENDED"];
 
         // Validation des rôles fournis
         $roles = $data['roles'] ?? ['ROLE_USER']; // Rôle par défaut : ROLE_USER
