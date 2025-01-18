@@ -42,12 +42,6 @@ function ajtcredit() {
 
 
 
-alert(<div class="text-center">
-    <button type="button" class="btn btn-danger" id="btncomptsupp">Supprimer</button>
-    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-</div>);
-
-
 
 getInfoscredits();
 
