@@ -1,4 +1,12 @@
-import { sanitizeHtml } from "../../js/script.js";
+
+function sanitizeHtml(text) {
+    const tempHtml = document.createElement('div');
+    tempHtml.textContent = text;
+    return tempHtml.innerHTML;
+}
+
+
+
 
 const btnrecherche = document.getElementById("Recherchertrajet");
 // Fonction principale pour récupérer les trajets
