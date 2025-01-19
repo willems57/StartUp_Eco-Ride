@@ -1,38 +1,42 @@
-//export {input2Role};
+
+//export {inputRole};
 //Implémenter le JS de ma page
 
 //recuperation des inputs du formulaire
 const inputNom = document.getElementById("NomInput");
 const inputPreNom = document.getElementById("PrenomInput");
+const inputCredit = document.getElementById("creditInput");
 const inputRole = document.getElementById("RoleInput");
 const inputMail = document.getElementById("EmailInput");
 const inputPassword = document.getElementById("PasswordInput");
 const inputValidationPassword = document.getElementById("ValidatePasswordInput");
-const btnValidation = document.getElementById("btn2-validation-inscription");
+const btnValidation = document.getElementById("btn-validation-inscription");
 const formInscription = document.getElementById("formulaireInscription");
 
 
 //ajout d'un envent listener sur chaque input pour valider le formulaire
 inputNom.addEventListener("keyup", validateForm); 
 inputPreNom.addEventListener("keyup", validateForm);
+inputCredit.addEventListener("keyup", validateForm);
 inputRole.addEventListener("keyup", validateForm);
 inputMail.addEventListener("keyup", validateForm);
 inputPassword.addEventListener("keyup", validateForm);
 inputValidationPassword.addEventListener("keyup", validateForm);
 
-btnValidation.addEventListener("click", Inscrireemployers);
+btnValidation.addEventListener("click", InscrireUtilisateur);
 
 //Function permettant de valider tout le formulaire
 function validateForm(){
     const nomok = validateRequired(inputNom);
     const prenomok = validateRequired(inputPreNom);
+    const creditok = validateRequired(inputCredit);
     const roleok = validateRequired(inputRole);
     const mailok = validateMail(inputMail);
     const passwordok = validatePassword(inputPassword);
     const passwordConfirmok = validateConfirmationPassword(inputPassword, inputValidationPassword);
 
 
-    if(nomok && prenomok && roleok && mailok && passwordok && passwordConfirmok){
+    if(nomok && prenomok && creditok && roleok && mailok && passwordok && passwordConfirmok){
         btnValidation.disabled = false;
     }
     else{
@@ -110,40 +114,42 @@ function validateMail(input){
                 }
             }
 
-            function Inscrireemployers(){
+            function InscrireUtilisateur() {
                 const dataForm = new FormData(formInscription);
-
+            
                 const myHeaders = new Headers();
-myHeaders.append("Content-Type", "application/json");
-
-const raw = JSON.stringify({
-  "firstName": dataForm.get(inputNom),
-  "lastName": dataForm.get(inputPreNom),
-  "role": dataForm.get(inputRole),
-  "email": dataForm.get(inputMail),
-  "password": dataForm.get(inputPassword)
-});
-
-const requestOptions = {
-  method: "POST",
-  headers: myHeaders,
-  body: raw,
-  redirect: "follow"
-};
-
-fetch("http://127.0.0.1:8000/api/registration", requestOptions)
-  .then(response => {
-    if(response.ok){
-        return response.json();
-    }
-    else{
-        alert("Erreur lors de l'inscription");
-    }
-  })
-  .then(result => {
-    alert("Bravo "+dataForm.get("Prenom")+", cous etes inscrits, vous pouvez vous connecter!");
-    document.location.href = "/admin";
-    console.log(result)
-})
-  .catch((error) => console.error(error));
+                myHeaders.append("Content-Type", "application/json");
+            
+                const raw = JSON.stringify({
+                    firstName: dataForm.get("Nom"),
+                    lastName: dataForm.get("Prenom"),
+                    credits: parseInt(dataForm.get("Credits")),
+                    roles: [dataForm.get("Role")], // Tableau pour les rôles
+                    email: dataForm.get("Email"),
+                    password: dataForm.get("Password"),
+                });
+            
+                const requestOptions = {
+                    method: "POST",
+                    headers: myHeaders,
+                    body: raw,
+                    redirect: "follow",
+                };
+            
+                fetch("http://127.0.0.1:8000/api/security/registration", requestOptions)
+                    .then((response) => {
+                        if (response.ok) {
+                            return response.json();
+                        } else {
+                            throw new Error("Erreur lors de l'inscription");
+                        }
+                    })
+                    .then((result) => {
+                        alert(`Bravo ${dataForm.get("Prenom")}, vous êtes inscrit(e) ! Vous pouvez maintenant vous connecter.`);
+                        document.location.href = "/signin"; // Redirection vers la page de connexion
+                        console.log(result);
+                    })
+                    .catch((error) => console.error("Erreur :", error));
             }
+            
+

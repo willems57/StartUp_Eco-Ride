@@ -114,151 +114,42 @@ function validateMail(input){
                 }
             }
 
-            function InscrireUtilisateur(){
+            function InscrireUtilisateur() {
                 const dataForm = new FormData(formInscription);
-
+            
                 const myHeaders = new Headers();
-myHeaders.append("Content-Type", "application/json");
-
-const raw = JSON.stringify({
-  "firstName": dataForm.get(inputNom.value),
-  "lastName": dataForm.get(inputPreNom.value),
-  "credits": dataForm.get(inputCredit.value),
-  "role": dataForm.get(inputRole.value),
-  "email": dataForm.get(inputMail.value),
-  "password": dataForm.get(inputPassword.value)
-});
-
-const requestOptions = {
-  method: "POST",
-  headers: myHeaders,
-  body: raw,
-  redirect: "follow"
-};
-
-fetch("http://127.0.0.1:8000/api/registration", requestOptions)
-  .then(response => {
-    if(response.ok){
-        return response.json();
-    }
-    else{
-        alert("Erreur lors de l'inscription");
-    }
-  })
-  .then(result => {
-    alert("Bravo "+dataForm.get("Prenom")+", cous etes inscrits, vous pouvez vous connecter!");
-    document.location.href = "/signin";
-    console.log(result)
-})
-  .catch((error) => console.error(error));
-            }
-
-
-
-
-/*
-            document.addEventListener("DOMContentLoaded", function() {
-                const inputNom = document.getElementById("NomInput");
-                const inputPreNom = document.getElementById("PrenomInput");
-                const inputCredit = document.getElementById("creditsInput");
-                const inputRole = document.getElementById("RoleInput");
-                const inputMail = document.getElementById("EmailInput");
-                const inputPassword = document.getElementById("PasswordInput");
-                const inputValidationPassword = document.getElementById("ValidatePasswordInput");
-                const btnValidation = document.getElementById("btn-validation-inscription");
+                myHeaders.append("Content-Type", "application/json");
             
-                btnValidation.addEventListener("click", InscrireUtilisateur);
-            
-                // Ajout des écouteurs sur chaque champ
-                [inputNom, inputPreNom, inputCredit, inputRole, inputMail, inputPassword, inputValidationPassword].forEach(input => {
-                    input?.addEventListener("keyup", validateForm);
+                const raw = JSON.stringify({
+                    firstName: dataForm.get("Nom"),
+                    lastName: dataForm.get("Prenom"),
+                    credits: parseInt(dataForm.get("Credits")),
+                    roles: [dataForm.get("Role")], // Tableau pour les rôles
+                    email: dataForm.get("Email"),
+                    password: dataForm.get("Password"),
                 });
             
-                function validateForm() {
-                    const nomok = validateRequired(inputNom);
-                    const prenomok = validateRequired(inputPreNom);
-                    const creditok = validateRequired(inputCredit);
-                    const roleok = validateRequired(inputRole);
-                    const mailok = validateMail(inputMail);
-                    const passwordok = validatePassword(inputPassword);
-                    const passwordConfirmok = validateConfirmationPassword(inputPassword, inputValidationPassword);
+                const requestOptions = {
+                    method: "POST",
+                    headers: myHeaders,
+                    body: raw,
+                    redirect: "follow",
+                };
             
-                    btnValidation.disabled = !(nomok && prenomok && creditok && roleok && mailok && passwordok && passwordConfirmok);
-                }
+                fetch("http://127.0.0.1:8000/api/security/registration", requestOptions)
+                    .then((response) => {
+                        if (response.ok) {
+                            return response.json();
+                        } else {
+                            throw new Error("Erreur lors de l'inscription");
+                        }
+                    })
+                    .then((result) => {
+                        alert(`Bravo ${dataForm.get("Prenom")}, vous êtes inscrit(e) ! Vous pouvez maintenant vous connecter.`);
+                        document.location.href = "/signin"; // Redirection vers la page de connexion
+                        console.log(result);
+                    })
+                    .catch((error) => console.error("Erreur :", error));
+            }
             
-                function validateRequired(input) {
-                    if (input?.value.trim() !== '') {
-                        input.classList.add("is-valid");
-                        input.classList.remove("is-invalid");
-                        return true;
-                    } else {
-                        input?.classList.remove("is-valid");
-                        input?.classList.add("is-invalid");
-                        return false;
-                    }
-                }
-            
-                function validateMail(input) {
-                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                    if (emailRegex.test(input?.value)) {
-                        input.classList.add("is-valid");
-                        input.classList.remove("is-invalid");
-                        return true;
-                    } else {
-                        input?.classList.remove("is-valid");
-                        input?.classList.add("is-invalid");
-                        return false;
-                    }
-                }
-            
-                function validatePassword(input) {
-                    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/;
-                    if (passwordRegex.test(input?.value)) {
-                        input.classList.add("is-valid");
-                        input.classList.remove("is-invalid");
-                        return true;
-                    } else {
-                        input?.classList.remove("is-valid");
-                        input?.classList.add("is-invalid");
-                        return false;
-                    }
-                }
-            
-                function validateConfirmationPassword(inputPwd, inputConfirmPwd) {
-                    if (inputPwd?.value === inputConfirmPwd?.value) {
-                        inputConfirmPwd.classList.add("is-valid");
-                        inputConfirmPwd.classList.remove("is-invalid");
-                        return true;
-                    } else {
-                        inputConfirmPwd?.classList.add("is-invalid");
-                        inputConfirmPwd?.classList.remove("is-valid");
-                        return false;
-                    }
-                }
-            
-                function InscrireUtilisateur() {
-                    const dataForm = new FormData(document.getElementById("formulaireInscription1"));
-            
-                    const requestOptions = {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                            firstName: dataForm.get("Nom"),
-                            lastName: dataForm.get("Prenom"),
-                            credits: dataForm.get("Credits"),
-                            role: dataForm.get("Role"),
-                            email: dataForm.get("Email"),
-                            password: dataForm.get("Password")
-                        }),
-                    };
-            
-                    fetch("http://127.0.0.1:8000/api/registration", requestOptions)
-                        .then(response => response.ok ? response.json() : Promise.reject("Erreur lors de l'inscription"))
-                        .then(result => {
-                            alert(`Bravo ${dataForm.get("Prenom")}, vous êtes inscrit(e) !`);
-                            document.location.href = "/signin";
-                        })
-                        .catch(error => alert(error));
-                }
-            });
-            
+
