@@ -17,8 +17,8 @@ const formInscription = document.getElementById("formulaireInscription");
 //ajout d'un envent listener sur chaque input pour valider le formulaire
 inputNom.addEventListener("keyup", validateForm); 
 inputPreNom.addEventListener("keyup", validateForm);
-inputCredit.addEventListener("keyup", validateForm);
-inputRole.addEventListener("keyup", validateForm);
+//inputCredit.addEventListener("keyup", validateForm);
+//inputRole.addEventListener("keyup", validateForm);
 inputMail.addEventListener("keyup", validateForm);
 inputPassword.addEventListener("keyup", validateForm);
 inputValidationPassword.addEventListener("keyup", validateForm);
@@ -29,14 +29,14 @@ btnValidation.addEventListener("click", InscrireUtilisateur);
 function validateForm(){
     const nomok = validateRequired(inputNom);
     const prenomok = validateRequired(inputPreNom);
-    const creditok = validateRequired(inputCredit);
-    const roleok = validateRequired(inputRole);
+   // const creditok = validateRequired(inputCredit);
+    //const roleok = validateRequired(inputRole);
     const mailok = validateMail(inputMail);
     const passwordok = validatePassword(inputPassword);
     const passwordConfirmok = validateConfirmationPassword(inputPassword, inputValidationPassword);
 
 
-    if(nomok && prenomok && creditok && roleok && mailok && passwordok && passwordConfirmok){
+    if(nomok && prenomok && /*creditok && roleok &&*/ mailok && passwordok && passwordConfirmok){
         btnValidation.disabled = false;
     }
     else{
@@ -123,8 +123,8 @@ function validateMail(input){
                 const raw = JSON.stringify({
                     firstName: dataForm.get("Nom"),
                     lastName: dataForm.get("Prenom"),
-                    credits: parseInt(dataForm.get("Credits")),
-                    roles: [dataForm.get("Role")], // Tableau pour les rôles
+                    credits: parseInt(dataForm.get("Credits")) || 20, // Assure que credits est un entier,
+                    roles: ["ROLE_EMPLOYER"], // Définit explicitement le rôle
                     email: dataForm.get("Email"),
                     password: dataForm.get("Password"),
                 });

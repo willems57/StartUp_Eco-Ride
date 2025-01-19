@@ -1,12 +1,14 @@
-// Import des utilitaires
-import { setCookie, setToken, tokenCookieName, RoleCookieName, apiUrl } from "../script.js";
 
-// Récupération des éléments DOM
+// Récupération des éléments HTML
 const mailInput = document.getElementById("EmailInput");
 const passwordInput = document.getElementById("PasswordInput");
 const btnSignin = document.getElementById("btnSignin");
+const signinForm = document.getElementById("signinForm");
 
-// Ajout d'un écouteur d'événements sur le bouton de connexion
+// Configuration de l'URL de l'API
+const apiUrl = "http://127.0.0.1:8000/api/security/login";
+
+// Gestionnaire d'événement pour le bouton de connexion
 btnSignin.addEventListener("click", checkCredentials);
 
 // Fonction principale pour gérer la connexion
@@ -31,13 +33,16 @@ async function checkCredentials(event) {
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
-    const raw = JSON.stringify({ email: email, password }); // Correct pour votre contrôleur
+    const raw = JSON.stringify({
+        email: email,
+        password: password
+    });
 
     const requestOptions = {
         method: 'POST',
         headers: myHeaders,
         body: raw,
-        redirect: 'follow',
+        redirect: 'follow'
     };
 
     // Gestion de l'état du bouton pendant le traitement
@@ -46,7 +51,7 @@ async function checkCredentials(event) {
 
     try {
         // Envoi de la requête à l'API
-        const response = await fetch(`${apiUrl}/api/security/login`, requestOptions);
+        const response = await fetch(apiUrl, requestOptions);
 
         if (!response.ok) {
             const errorData = await response.json();
@@ -58,15 +63,7 @@ async function checkCredentials(event) {
 
         // Traitement de la réponse
         const result = await response.json();
-        setToken(result.apiToken); // Stockage du token
-        setCookie(RoleCookieName, result.roles[0], 7); // Stockage du rôle
-
-        // Message de succès
-        alert("Connexion réussie !");
-
-        // Redirection basée sur les rôles
-        const redirectUrl = result.roles.includes("ROLE_ADMIN") ? "/admin" : "/dashboard";
-        window.location.replace(redirectUrl);
+        handleSuccessfulLogin(result);
 
     } catch (error) {
         console.error("Erreur :", error);
@@ -74,6 +71,46 @@ async function checkCredentials(event) {
     } finally {
         // Réinitialisation de l'état du bouton
         btnSignin.disabled = false;
-        btnSignin.textContent = "Se connecter";
+        btnSignin.textContent = "Connexion";
     }
+}
+
+// Fonction pour gérer une connexion réussie
+function handleSuccessfulLogin(userData) {
+    // Stockage du token et des informations utilisateur dans les cookies
+    setCookie("accesstoken", userData.apiToken, 7); // Stockage du token pendant 7 jours
+    setCookie("role", userData.roles[0], 7); // Stockage du rôle de l'utilisateur
+
+    // Message de succès
+    alert("Connexion réussie ! Bienvenue, " + userData.email);
+
+    // Redirection basée sur le rôle
+    const redirectUrl = userData.roles.includes("ROLE_ADMIN") ? "/admin" : "/dashboard";
+    window.location.replace(redirectUrl);
+}
+
+// Fonctions utilitaires pour les cookies
+function setCookie(name, value, days) {
+    let expires = "";
+    if (days) {
+        const date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "") + expires + "; path=/";
+}
+
+function getCookie(name) {
+    const nameEQ = name + "=";
+    const ca = document.cookie.split(';');
+    for (let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+    }
+    return null;
+}
+
+function eraseCookie(name) {
+    document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 }

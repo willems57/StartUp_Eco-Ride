@@ -87,9 +87,9 @@ function setCookie(name,value,days) {
                         element.classList.add("d-none");
                     }
                     break;
-                case 'ROLE_ADMIN':
+                case 'ROLE_SUPER_ADMIN':
                     // Si l'utilisateur n'est pas connecté ou n'a pas le rôle admin, cacher cet élément
-                    if (!userConnected || role !== "ROLE_ADMIN") {
+                    if (!userConnected || role !== "ROLE_SUPER_ADMIN") {
                         element.classList.add("d-none");
                     }
                     break;
