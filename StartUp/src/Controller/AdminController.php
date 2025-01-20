@@ -46,4 +46,26 @@ class AdminController extends AbstractController
 
         return $this->json(['error' => 'Aucun rôle fourni.'], 400);
     }
+
+    
+#[Route('/search', methods: ['POST'])]
+public function searchUsers(Request $request, UserRepository $userRepository): JsonResponse
+{
+    $data = json_decode($request->getContent(), true);
+    $criteria = array_filter([
+        'firstName' => $data['firstName'] ?? null,
+        'lastName' => $data['lastName'] ?? null,
+        'email' => $data['email'] ?? null,
+    ]);
+
+    $users = $userRepository->findBy($criteria);
+
+    $data = array_map(fn($user) => [
+        'id' => $user->getId(),
+        'email' => $user->getEmail(),
+        'roles' => $user->getRoles(),
+    ], $users);
+
+    return $this->json($data);
+}
 }
