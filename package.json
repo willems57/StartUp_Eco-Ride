@@ -1,0 +1,12 @@
+{
+  "name": "startup_eco-ride",
+  "version": "1.0.0",
+  "description": "ce site est un site vitre de la startup Eco Ride",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

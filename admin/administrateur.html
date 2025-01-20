@@ -1,0 +1,220 @@
+<div class="hero-scene text-center text-white">
+        <div class="hero-scene-content">
+            <h1>Administrateur</h1>
+        </div>
+    </div>
+
+    
+<nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="secondary">  
+    <div class="container-fluid">
+        
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+              </button>                          
+              <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                      <li class="nav-item">
+                        <a href="/signup2" class="btn btn-primary">Nouvelle inscription!</a>
+                      </li>
+
+                      <li class="nav-item">
+                        <a class="nav-link" href="/abonees">Espace abonees</a>
+                      </li>
+
+                      <li class="nav-item">
+                        <a href="/suspendu" class="nav-link">Suspenssion de compte</a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </nav>
+
+          
+<style>
+  .Graphique-covoiturage {
+        font-family: arial, sans-serif;
+        text-align: center;
+        margin: 20px;
+    }
+    #mychart {
+      max-width: 800px;
+      margin: auto;
+    }
+</style>
+
+<div class="mb-3"></div>
+              <div class="Graphique-covoiturage">
+                <h1>Nombre de covoiturage par jour</h1>
+                <canvas id="mychart"></canvas>
+
+                <script>
+                  
+const btntrajetfini = document.getElementById("btntrajetfini");
+
+//ajouter un gestionaire d'evenement au boutton
+btntrajetfini.addEventListener('click', saveClick);
+
+//metre a jour le au chargement de la page
+
+updateChart();
+                   //cle pour le stockage des clics
+    const storagekey = 'dailyClicks';
+
+//recuperer ladate actuel
+const today = new Date().toISOString().split('T')[0];
+
+//recupereles donne du stockage local
+const clickData = JSON.parse(localStorage.getItem(storagekey)) || {};
+
+//verifier si la date d'aujourd'hui est presente sinon l'initialiser
+if (!clickData[today]) {
+    clickData[today] = 0;
+//initialiser les clicks pour aujourd'hui
+}
+
+//metre a jour localStorage
+localStorage.setItem(storagekey, JSON.stringify(clickData)); 
+
+// fonction pour enregistrer un clique
+function saveClick() {
+    //incrimenter les clic d'aujourd'hui
+    clickData[today]++;
+    localStorage.setItem(storagekey, JSON.stringify(clickData));
+    updateChart();
+}
+
+//obtenir les label (date) et les donne click pour le graphique
+const labels = Object.keys(clickData); 
+const values = Object.values(clickData);
+
+//creation du graphique 
+const ctx = document.getElementById('mychart').getContext('2d');
+const chart = new chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: labels, //dates
+        datasets: [{
+            label: 'clics par kour',
+            data: values, // nombre de clics
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: 'rgba(75, 192, 192, 1)', 
+            borderwidth: 1
+        }]
+    },
+    option: {
+        reponsive: true, 
+        scales: {
+            y: { begiAtZero: true //l'axe des y commence a 0
+                 }
+        }
+    }
+});
+
+//metre a jour le graphique
+function updateChart() {
+    chart.data.labels = Object.keys(clickData); //labels mis a jour
+    chart.data.datasets[0].data = Object.values(clickData); //donne mis a jour
+    chart.update(); // raffraichir le graphique
+}
+
+                </script>
+
+              </div>
+
+
+
+
+              <style>
+                .graphique-credits-journaliere {
+                  font-family: Arial, sans-serif;
+                  text-align: center;
+                  margin: 20px;
+                }
+                #myChart2 {
+                  max-width: 800px;
+                  margin: auto;
+                }
+              </style>
+
+
+              <div class="mb-3"></div>
+              <div class="graphique-credits-journaliere">
+                <h2>Évolution Journalière des Crédits</h2>
+                <canvas id="myChart2"></canvas>
+              
+
+<script>
+const creditButton = document.getElementById("creditButton")
+
+
+   // Écouteur pour le bouton
+ creditButton.addEventListener('click', addCredits);
+ 
+ // Mettre à jour le graphique au chargement de la page
+ updateChart2();
+
+ // Clé pour le stockage local
+ const storageKey = 'dailyCredits';
+
+ // Obtenir la date actuelle (au format YYYY-MM-DD)
+ const today2 = new Date().toISOString().split('T')[0];
+ 
+ // Charger les crédits journaliers depuis localStorage
+ let creditData = JSON.parse(localStorage.getItem(storageKey)) || {};
+ 
+ // Initialiser les crédits pour aujourd'hui si non défini
+ if (!creditData[today]) {
+   creditData[today] = 0;
+ }
+ 
+ // Fonction pour sauvegarder les crédits dans localStorage
+ function saveCredits() {
+   localStorage.setItem(storageKey, JSON.stringify(creditData));
+ }
+ 
+ // Fonction pour ajouter des crédits pour aujourd'hui
+ function addCredits() {
+   creditData[today] += 2; // Ajouter 2 crédits pour aujourd'hui
+   saveCredits(); // Sauvegarder dans localStorage
+   updateChart(); // Mettre à jour le graphique
+ }
+ 
+ // Obtenir les labels (dates) et les données (crédits) pour le graphique
+ const labels2 = Object.keys(creditData);
+ const values2 = Object.values(creditData);
+ 
+ // Configurer le graphique
+ const ctx2 = document.getElementById('myChart2').getContext('2d');
+ const chart2 = new Chart(ctx, {
+   type: 'line',
+   data: {
+     labels: labels, // Dates
+     datasets: [{
+       label: 'Crédits par Jour',
+       data: values, // Crédits journaliers
+       backgroundColor: 'rgba(75, 192, 192, 0.2)',
+       borderColor: 'rgba(75, 192, 192, 1)',
+       borderWidth: 2,
+       tension: 0.4 // Courbe lissée
+     }]
+   },
+   options: {
+     responsive: true,
+     scales: {
+       y: {
+         beginAtZero: true // Commencer l'axe Y à 0
+       }
+     }
+   }
+ });
+ 
+ // Fonction pour mettre à jour le graphique
+ function updateChart2() {
+   chart.data.labels = Object.keys(creditData); // Mettre à jour les labels (dates)
+   chart.data.datasets[0].data = Object.values(creditData); // Mettre à jour les crédits
+   chart.update(); // Rafraîchir le graphique
+ }
+ 
+</script>
+
+</div>
