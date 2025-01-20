@@ -63,7 +63,7 @@ const couleurvInput = document.getElementById("couleurvInput");
 const imagevInput = document.getElementById("imagevInput");
 const placesInput = document.getElementById("placesInput");
 const prixInput = document.getElementById("prixInput");
-const inputCredit = document.getElementById("creditInput");
+//const inputCredit = document.getElementById("creditInput");
 const passagersInput = document.getElementById("passagersInput");
 const btntrajetajtInput = document.getElementById("btntrajetajtmodal");
 const btnpdemarertrajet = document.getElementById("btnpdemarertrajet");
@@ -75,54 +75,7 @@ const btnvehiculesuppInput = document.getElementById("btnvehiculesupp");
 const ajtvehiculeform = document.getElementById("ajtfromvehicule");
 const suppvehiculeform = document.getElementById("suppfromvehicule");
 const btntrajetfini = document.getElementById("btntrajetfini");
-const btnpayer = document.getElementById("btnpayer");
-
-
-
-btnpayer.addEventListener("click", effectuerPaiement);
-// Fonction pour effectuer un paiement
-function effectuerPaiement(passagersInput) {
- 
-  const passagers = [passagersInput];
-  passagers.forEach(passager => {
-    if (passager.value !== "") {
-      processPayment();
-    }
-  });
-}
-
-
-function processPayment() {
-
-  const passager ={
-name: [
-  document.getElementById("passagersInput").value,
-],
-creditsInput: parseInt(document.getElementById("creditsInput").value, 10) || 0,
-};
-
-const conducteurInput = {
-    name: `${inputNom.value} ${inputPreNom.value}`,
-    creditsInput: parseInt(document.getElementById("creditsInput").value, 10) || 0,
-};
-
-
-
-  if ([passager.creditsInput >= prixInput.value]) {
-    [passager.creditsInput -= prixInput]; // Passager paye
-    conducteurInput.creditsInput += prixInput; // Conducteur reçoit
-
-    console.log(`${passager.value} a payé ${prixInput.value} crédits.`);
-    console.log(`${conducteurInput.value} a reçu ${prixInput.value} crédits.`);
-
-    // Afficher les soldes mis à jour
-    console.log(`Solde de ${passager.value} : ${passager.creditsInput} crédits`);
-    console.log(`Solde de ${conducteurInput.value} : ${conducteurInput.creditsInput} crédits`);
-  } else {
-    console.log(`Erreur : ${passager.value} n'a pas assez de crédits pour payer.`);
-  }
-}
-
+//const btnpayer = document.getElementById("btnpayer");
 
 
 
@@ -416,7 +369,7 @@ function gettrajetImage(data){
                               <button type="button" class="btn btn-primary" id="btnpdemarertrajet">Demarer</button>
                           </div>
                           <div class="text-center">
-                          <button type="button" class="btn btn-danger" id="btnvehiculesupp">Supprimer</button>
+                          <button type="button" class="btn btn-danger" id="btntrajetsupp">Supprimer</button>
                       </div>
                     </div>
                 </div>
@@ -783,7 +736,6 @@ function getfinitrajetImage(data) {
                   <p>Voyage fini!</p>
               </div>
               <div class="text-center">
-                  <button type="button" class="btn btn-danger" id="btnpayer">Payer</button>
                   <div><a class="nav-link" href="/avis">Avis</a></div>
                   <div class="col-6 col-lg-4">
                       <a class="nav-link" href="/contact">S.A.V</a>
@@ -835,61 +787,110 @@ function ajtcredit() {
 }
 
 
+btntrajetfini.addEventListener("click", async () => {
+  // Message à envoyer
+  const content = `Votre trajet est terminé. Merci d'avoir voyagé avec nous !
+      <button type="button" class="btn btn-danger" id="btnpayer">Payer</button>`;
 
-
-btntrajetfini.addEventListener("click", () => {
-  const message = "Votre trajet est terminé. Merci d'avoir voyagé avec nous !"; // Message
-  const content = message.value.trim();
-  const destinataires = passagers.value.trim();
-  // Collecte des noms et emails des passagers
-  const passagers = [
-      { name: document.getElementById("passagersInput").value, email: document.getElementById("EmailInput1").value },
-      ];
-
-      sendMessage();
-
-  // Fonction pour envoyer les données à l'API
-const sendMessage = async () => {
-  const apiUrl = 'http://127.0.0.1:8000/api/send-message';
-  const data = {
-      content: content,
-      email: destinataires
-  };
-
-  try {
-      const response = await fetch(apiUrl, {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(data)
-      });
-
-      if (!response.ok) {
-          const errorData = await response.json();
-          console.error('Erreur:', errorData.error);
-          return;
-      }
-
-      const responseData = await response.json();
-      console.log('Succès:', responseData.status);
-  } catch (error) {
-      console.error('Erreur réseau ou serveur:', error);
-  }
-};
-});
+  // Récupérer tous les passagers à partir du DOM
+  const passagerElements = document.querySelectorAll(".passager-row"); // Exemple : éléments avec une classe spécifique
+  const passagers = Array.from(passagerElements).map(row => ({
+      name: row.querySelector(".passagersInput")?.value.trim(), // Nom du passager
+      email: row.querySelector(".EmailInput")?.value.trim(),    // Email du passager
+      id: row.getAttribute("data-id")                          // ID unique pour chaque passager
+  }));
 
   // Filtrer les passagers avec des emails valides
-  const destinataires = passagers
-      .filter(passager => passager.email && passager.email.includes("@"))
-      .map(passager => ({ email: passager.email, name: passager.name }));
+  const destinataires = passagers.filter(passager =>
+      passager.email && passager.email.includes("@") // Validation rudimentaire pour les emails
+  );
 
   if (destinataires.length === 0) {
       console.error("Aucun destinataire valide trouvé.");
+      alert("Aucun destinataire valide trouvé. Vérifiez les emails des passagers.");
       return;
   }
 
-  
+  // Fonction pour envoyer le message à l'API
+  const sendMessage = async () => {
+      const apiUrl = "http://127.0.0.1:8000/api/send-message";
+      const data = {
+          content: content,
+          recipients: destinataires // Tableau des destinataires
+      };
+
+      try {
+          const response = await fetch(apiUrl, {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${getToken()}` // Assurez-vous que le token est ajouté pour l'authentification
+              },
+              body: JSON.stringify(data)
+          });
+
+          if (!response.ok) {
+              const errorData = await response.json();
+              console.error('Erreur:', errorData.error || "Erreur inconnue");
+              alert("Erreur lors de l'envoi des messages. Veuillez réessayer.");
+              return;
+          }
+
+          console.log("Messages envoyés avec succès !");
+          alert("Messages envoyés avec succès !");
+      } catch (error) {
+          console.error('Erreur réseau ou serveur:', error);
+          alert("Erreur réseau ou serveur. Veuillez vérifier votre connexion.");
+      }
+  };
+
+  // Appeler la fonction pour envoyer les messages
+  await sendMessage();
+
+  // Déclencher la fonction de paiement après l'envoi des messages
+  effectuerPaiement(passagers);
+});
+
+// Fonction pour effectuer un paiement
+function effectuerPaiement(passagers) {
+  passagers.forEach(passager => {
+      if (passager.name && passager.email) {
+          processPayment(passager);
+      }
+  });
+}
+
+// Fonction pour traiter le paiement
+function processPayment(passager) {
+  const passagerCreditsInput = parseInt(document.getElementById(`creditsInput-${passager.id}`)?.value, 10) || 0;
+  const prixInput = parseInt(document.getElementById("prixInput")?.value, 10) || 0;
+
+  // Simuler un conducteur pour le test
+  const conducteurCreditsInput = parseInt(document.getElementById("conducteurCreditsInput")?.value, 10) || 0;
+
+  if (passagerCreditsInput >= prixInput) {
+      // Mettre à jour les crédits après paiement
+      const newPassagerCredits = passagerCreditsInput - prixInput;
+      const newConducteurCredits = conducteurCreditsInput + prixInput;
+
+      console.log(`${passager.name} a payé ${prixInput} crédits.`);
+      console.log(`Le conducteur a reçu ${prixInput} crédits.`);
+
+      // Afficher les nouveaux soldes
+      console.log(`Solde de ${passager.name} : ${newPassagerCredits} crédits`);
+      console.log(`Solde du conducteur : ${newConducteurCredits} crédits`);
+
+      // Mise à jour des valeurs dans le DOM
+      document.getElementById(`creditsInput-${passager.id}`).value = newPassagerCredits;
+      document.getElementById("conducteurCreditsInput").value = newConducteurCredits;
+  } else {
+      console.error(`Erreur : ${passager.name} n'a pas assez de crédits pour payer.`);
+      alert(`${passager.name} n'a pas assez de crédits pour payer.`);
+  }
+}
+
+
+
 
 
 getInfoscredits();
