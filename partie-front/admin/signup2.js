@@ -123,7 +123,7 @@ function validateMail(input){
                 const raw = JSON.stringify({
                     firstName: dataForm.get("Nom"),
                     lastName: dataForm.get("Prenom"),
-                    credits: parseInt(dataForm.get("Credits")) || 20, // Assure que credits est un entier,
+                    credits: parseInt(dataForm.get("Credits")), // Assure que credits est un entier,
                     roles: ["ROLE_EMPLOYER"], // Définit explicitement le rôle
                     email: dataForm.get("Email"),
                     password: dataForm.get("Password"),

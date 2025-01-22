@@ -85,7 +85,7 @@ function handleSuccessfulLogin(userData) {
     alert("Connexion réussie ! Bienvenue, " + userData.email);
 
     // Redirection basée sur le rôle
-    const redirectUrl = userData.roles.includes("ROLE_ADMIN") ? "/admin" : "/dashboard";
+    const redirectUrl = userData.roles.includes("ROLE_ADMIN") ? "/administrateur" : "/dashboard";
     window.location.replace(redirectUrl);
 }
 

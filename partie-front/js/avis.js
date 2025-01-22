@@ -1,4 +1,43 @@
-import { sanitizeHtml} from ".././js/script";
+// Fonction getToken universelle
+function getToken() {
+    // Vérifie d'abord si le token est dans les cookies
+    const cookieToken = getCookie("X-Auth-TOKEN");
+    if (cookieToken) {
+        return cookieToken;
+    }
+  
+    // Vérifie si le token est dans le localStorage
+    const localStorageToken = localStorage.getItem("X-Auth-TOKEN");
+    if (localStorageToken) {
+        return localStorageToken;
+    }
+  
+    // Si aucun token n'est trouvé, affiche une erreur dans la console
+    console.error("Aucun token d'authentification trouvé.");
+    return null;
+  }
+  
+  // Fonction pour récupérer un cookie spécifique
+  function getCookie(name) {
+    const nameEQ = name + "=";
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+        let cookie = cookies[i];
+        while (cookie.charAt(0) === ' ') cookie = cookie.substring(1, cookie.length);
+        if (cookie.indexOf(nameEQ) === 0) return cookie.substring(nameEQ.length, cookie.length);
+    }
+    return null;
+  }
+
+
+
+  
+function sanitizeHtml(text) {
+    const tempHtml = document.createElement('div');
+    tempHtml.textContent = text;
+    return tempHtml.innerHTML;
+}
+
 
 const dateavisInput = document.getElementById("dateavisInput");
 const pseudoInput = document.getElementById("pseudoInput");
@@ -25,7 +64,7 @@ function ajtavis(){
     const dataForm = new FormData(avisformajt);
 
     const myHeaders = new Headers();
-    //myHeaders.append("X-Auth-TOKEN", getToken());
+    myHeaders.append("X-Auth-TOKEN", getToken());
     myHeaders.append("Content-Type", "application/json");
     
     const raw = JSON.stringify({
