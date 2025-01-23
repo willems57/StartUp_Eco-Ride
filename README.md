@@ -13,6 +13,19 @@ L'objectif principal d'EcoRide est de devenir une solution phare pour les covoit
 
 ---
 
+## Diagramme de Classes
+
+Le diagramme ci-dessous représente les entités principales et leurs relations dans le projet EcoRide.
+
+![Diagramme de Classes](./images/diagramme_classes.png)
+
+
+
+## Maquette Figma
+Ce projet est basé sur la maquette Figma suivante :
+[Lien vers la maquette](https://www.figma.com/design/uX3aCztfAknpFMed9e4N1m/StartUp-Ecoride)
+
+
 ## 🔧 **Technologies Utilisées**
 
 ### **Front-end :**

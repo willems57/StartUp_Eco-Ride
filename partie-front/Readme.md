@@ -6,6 +6,11 @@ EcoRide est une plateforme de covoiturage en ligne et écologique, visant à ré
 
 [![Author](https://img.shields.io/badge/author-jeanwillems%40hotmail.fr-blue.svg)](https://github.com/willems57)
 
+## Maquette Figma
+Ce projet est basé sur la maquette Figma suivante :
+[Lien vers la maquette](https://www.figma.com/design/uX3aCztfAknpFMed9e4N1m/StartUp-Ecoride)
+
+
 ## Table des matières
 
 - [Technologies utilisées](#technologies-utilisées)
