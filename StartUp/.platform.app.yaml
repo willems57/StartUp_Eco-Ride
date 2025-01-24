@@ -23,8 +23,9 @@ variables:
     MESSENGER_TRANSPORT_DSN: "doctrine://default?auto_setup=0"
 
 build:
+  flavor: composer
   commands:
-    - composer install --no-dev --optimize-autoloader
+    install: composer install --no-dev --optimize-autoloader
 
 disk: 512
 mounts:

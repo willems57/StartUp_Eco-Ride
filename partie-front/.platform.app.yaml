@@ -6,7 +6,9 @@ web:
       root: "build" # Dossier contenant les fichiers buildés (par exemple pour React ou Angular)
       index: "index.html"
 build:
+  flavor: none
   commands:
-    - npm install
-    - npm run build
+    build: |
+      npm install
+      npm run build
 disk: 512
