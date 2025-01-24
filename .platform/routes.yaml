@@ -1,0 +1,6 @@
+"https://{default}/":
+  type: upstream
+  upstream: "front:http"
+"https://{default}/api":
+  type: upstream
+  upstream: "back:http"

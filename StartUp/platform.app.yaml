@@ -1,0 +1,12 @@
+name: back
+type: "php:8.1" # Version PHP
+dependencies:
+  php:
+    symfony/runtime: "^6.4"
+web:
+  locations:
+    "/":
+      passthru: "/index.php" # Point d'entrée Symfony
+build:
+  commands:
+    - composer install --no-dev --optimize-autoloader
