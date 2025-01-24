@@ -1,12 +1,31 @@
-name: back
+name: app
 type: "php:8.1" # Version PHP
+
 dependencies:
   php:
     symfony/runtime: "^6.4"
+
 web:
   locations:
     "/":
-      passthru: "/index.php" # Point d'entrée Symfony
+      passthru: "/index.php"
+
+relationships:
+  database: "db:mysql"
+
+variables:
+  env:
+    APP_ENV: "prod"
+    APP_SECRET: "18e9f9c1fdd1c36a517d0b532620fd48"
+    DATABASE_URL: "mysql://willems:phinngrwHTI5098%2A@database/StartUp?serverVersion=10.4&charset=utf8mb4"
+    MAILER_DSN: "smtp://willems:phinngrwHTI5098%2A@willemsj58.gmail.com:587"
+    CORS_ALLOW_ORIGIN: "^https?://(localhost|127\\.0\\.0\\.1|startup-ecoride.platform.sh)(:[0-9]+)?$"
+    MESSENGER_TRANSPORT_DSN: "doctrine://default?auto_setup=0"
+
 build:
   commands:
     - composer install --no-dev --optimize-autoloader
+
+disk: 512
+mounts:
+  "/var/storage": "shared:files"
