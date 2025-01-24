@@ -1,14 +1,11 @@
 name: front
-type: nodejs:16 # Version de Node.js
+type: nodejs:16 # Version de Node.js, adaptez si besoin
 web:
   locations:
     "/":
-      root: "build" # Dossier contenant les fichiers buildés (par exemple pour React ou Angular)
+      root: "build" # Dossier contenant les fichiers buildés (pour React/Angular)
       index: "index.html"
 build:
-  flavor: none
   commands:
-    build: |
-      npm install
-      npm run build
-disk: 512
+    - npm install
+    - npm run build
