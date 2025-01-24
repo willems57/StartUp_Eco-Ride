@@ -1,5 +1,5 @@
-name: app
-type: "php:8.1" # Version PHP
+name: back
+type: "php:8.1"
 
 dependencies:
   php:
