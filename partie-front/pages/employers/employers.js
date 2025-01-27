@@ -83,7 +83,7 @@ function sanitizeHtml(text) {
             redirect: "follow"
         };
     
-        fetch(`http://127.0.0.1:8000/api/avis`, requestOptions)
+        fetch(`https://ecoride.alwaysdata.net/api/avis`, requestOptions)
             .then((response) => {
                 if (response.ok) {
                     alert("Avis validé avec succès !");
@@ -114,7 +114,7 @@ function supprimerAvis(avisId) {
         redirect: "follow"
     };
 
-    fetch(`http://127.0.0.1:8000/api/avisvalidation/${avisId}`, requestOptions)
+    fetch(`https://ecoride.alwaysdata.net/api/avisvalidation/${avisId}`, requestOptions)
         .then((response) => {
             if (response.ok) {
                 alert("Avis supprimé avec succès !");
@@ -144,7 +144,7 @@ function getInfosAvis() {
         redirect: 'follow'
     };
 
-    fetch("http://127.0.0.1:8000/api/avisvalidation", requestOptions)
+    fetch("https://ecoride.alwaysdata.net/api/avisvalidation", requestOptions)
         .then(response => {
             if (response.ok) {
                 return response.json();
@@ -239,7 +239,7 @@ function getInfosMessages() {
         redirect: 'follow'
     };
 
-    fetch("http://127.0.0.1:8000/api/contacts", requestOptions)
+    fetch("https://ecoride.alwaysdata.net/api/contacts", requestOptions)
         .then(response => {
             if (response.ok) {
                 return response.json();
@@ -338,7 +338,7 @@ function getMessageHTML(data) {
     
         // Fonction pour envoyer les données à l'API
         const sendMessage = async () => {
-            const apiUrl = 'http://127.0.0.1:8000/api/send-message';
+            const apiUrl = 'https://ecoride.alwaysdata.net/api/send-message';
             const data = {
                 content: content,
                 email: destinataires

@@ -54,7 +54,7 @@ function fetchTrajets() {
         return;
     }
 
-    const apiUrl = `http://127.0.0.1:8000/api/trajets?depart=${encodeURIComponent(departInput)}&arrive=${encodeURIComponent(arriveInput)}&datetime=${encodeURIComponent(datedInput)}`;
+    const apiUrl = `https://ecoride.alwaysdata.net/api/trajets?depart=${encodeURIComponent(departInput)}&arrive=${encodeURIComponent(arriveInput)}&datetime=${encodeURIComponent(datedInput)}`;
 
     fetch(apiUrl)
         .then(response => {
@@ -181,7 +181,7 @@ function createReservation(trajetId) {
             user_id: userId,
         };
 
-        fetch("http://127.0.0.1:8000/api/reservations", {
+        fetch("https://ecoride.alwaysdata.net/api/reservations", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -214,7 +214,7 @@ function getUserId() {
         return null;
     }
 
-    return fetch("http://127.0.0.1:8000/api/security/account/me", {
+    return fetch("https://ecoride.alwaysdata.net/api/security/account/me", {
         method: "GET",
         headers: {
             "Authorization": `Bearer ${apiToken}`,

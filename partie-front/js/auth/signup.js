@@ -136,7 +136,7 @@ function validateMail(input){
                     redirect: "follow",
                 };
             
-                fetch("http://127.0.0.1:8000/api/security/registration", requestOptions)
+                fetch("https://ecoride.alwaysdata.net/api/security/registration", requestOptions)
                     .then((response) => {
                         if (response.ok) {
                             return response.json();

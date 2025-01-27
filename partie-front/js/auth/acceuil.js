@@ -75,7 +75,7 @@ function fetchTrajets() {
         return;
     }
 
-    const apiUrl = `http://127.0.0.1:8000/api/api/Trajets?depart=${encodeURIComponent(departInput)}&arrive=${encodeURIComponent(arriveInput)}&datetime=${encodeURIComponent(datedInput)}`;
+    const apiUrl = `https://ecoride.alwaysdata.net/api/api/Trajets?depart=${encodeURIComponent(departInput)}&arrive=${encodeURIComponent(arriveInput)}&datetime=${encodeURIComponent(datedInput)}`;
     
     fetch(apiUrl)
         .then(response => {
@@ -146,7 +146,7 @@ btndetails.addEventListener("click", checkCredentials2);
                 redirect: 'follow'
             };
         
-            fetch("http://127.0.0.1:8000/api/trajets", requestOptions)
+            fetch("https://ecoride.alwaysdata.net/api/trajets", requestOptions)
             .then(response =>{
                 if(response.ok){
                     return response.json();
