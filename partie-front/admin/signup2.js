@@ -136,7 +136,7 @@ function validateMail(input){
                     redirect: "follow",
                 };
             
-                fetch("https://ecoride.alwaysdata.net/api/security/registration", requestOptions)
+                fetch("https://api.Startup_Eco-Ride.platform.sh/api/security/registration", requestOptions)
                     .then((response) => {
                         if (response.ok) {
                             return response.json();

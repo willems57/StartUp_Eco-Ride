@@ -1,0 +1,24 @@
+name: backend
+type: php:8.2
+
+build:
+    flavor: composer
+
+relationships:
+    database: "mysql:mysql"
+
+variables:
+    php_version: 8.2
+
+web:
+    locations:
+        "/":
+            root: "public"
+            passthru: "/index.php"
+
+hooks:
+    build: |
+        composer install --no-dev --optimize-autoloader
+    deploy: |
+        php bin/console cache:clear
+        php bin/console doctrine:migrations:migrate --no-interaction

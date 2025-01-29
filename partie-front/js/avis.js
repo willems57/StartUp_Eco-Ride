@@ -82,7 +82,7 @@ function ajtavis(){
       redirect: "follow"
     };
     
-    fetch("https://ecoride.alwaysdata.net/api/avisvalidation", requestOptions)
+    fetch("https://api.Startup_Eco-Ride.platform.sh/api/avisvalidation", requestOptions)
       .then((response) => response.text())
       .then((result) => console.log(result))
       .catch((error) => console.error(error));
@@ -101,7 +101,7 @@ function getInfosservice() {
         redirect: 'follow'
     };
 
-    fetch("https://ecoride.alwaysdata.net/api/avis", requestOptions)
+    fetch("https://api.Startup_Eco-Ride.platform.sh/api/avis", requestOptions)
         .then(response => {
             if (!response.ok) {
                 throw new Error("Impossible de récupérer les avis.");

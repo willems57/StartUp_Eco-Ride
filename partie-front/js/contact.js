@@ -27,7 +27,7 @@ function contact(){
         redirect: "follow"
       };
 
-      fetch("https://ecoride.alwaysdata.net/api/contacts", requestOptions)
+      fetch("https://api.Startup_Eco-Ride.platform.sh/api/contacts", requestOptions)
       .then((response) => response.text())
       .then((result) => console.log(result))
       .catch((error) => console.error(error));

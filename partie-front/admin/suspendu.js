@@ -77,7 +77,7 @@ function suspendreUtilisateur() {
         body: raw,
     };
 
-    fetch(`https://ecoride.alwaysdata.net/admin/users/${userId}/role`, requestOptions)
+    fetch(`https://api.Startup_Eco-Ride.platform.sh/admin/users/${userId}/role`, requestOptions)
         .then((response) => {
             if (!response.ok) {
                 throw new Error(`Erreur HTTP : ${response.status}`);

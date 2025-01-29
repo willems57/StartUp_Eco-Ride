@@ -74,7 +74,7 @@ function fetchUsers(data) {
   myHeaders.append("Authorization", `Bearer ${token}`);
   myHeaders.append("Content-Type", "application/json");
 
-  fetch("https://ecoride.alwaysdata.net/admin/users/search", {
+  fetch("https://api.Startup_Eco-Ride.platform.sh/admin/users/search", {
       method: "POST",
       headers: myHeaders,
       body: JSON.stringify(data),
@@ -151,7 +151,7 @@ function updateUserRoles(userId, roles) {
   myHeaders.append("Authorization", `Bearer ${token}`);
   myHeaders.append("Content-Type", "application/json");
 
-  fetch(`https://ecoride.alwaysdata.net/admin/users/${userId}/role`, {
+  fetch(`https://api.Startup_Eco-Ride.platform.sh/admin/users/${userId}/role`, {
       method: "PUT",
       headers: myHeaders,
       body: JSON.stringify({ roles }),
@@ -183,7 +183,7 @@ function getInfoscredits() {
     redirect: 'follow'
   };
 
-  fetch("https://ecoride.alwaysdata.net/admin/users/", requestOptions)
+  fetch("https://api.Startup_Eco-Ride.platform.sh/admin/users/", requestOptions)
     .then(response => {
       if (response.ok) {
         return response.json();

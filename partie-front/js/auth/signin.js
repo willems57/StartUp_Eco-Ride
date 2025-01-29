@@ -6,7 +6,7 @@ const btnSignin = document.getElementById("btnSignin");
 const signinForm = document.getElementById("signinForm");
 
 // Configuration de l'URL de l'API
-const apiUrl = "https://ecoride.alwaysdata.net/api/security/login";
+const apiUrl = "https://api.Startup_Eco-Ride.platform.sh/api/security/login";
 
 // Gestionnaire d'événement pour le bouton de connexion
 btnSignin.addEventListener("click", checkCredentials);

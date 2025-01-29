@@ -1,0 +1,10 @@
+applications:
+  backend:
+    type: php:8.2
+    source:
+      root: backend
+
+  frontend:
+    type: nodejs:18
+    source:
+      root: frontend

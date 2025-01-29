@@ -79,7 +79,7 @@ function ajtcredit() {
     };
 
     // Effectuer la requête PUT
-    fetch("https://ecoride.alwaysdata.net/api/security/account/me", requestOptions)
+    fetch("https://api.Startup_Eco-Ride.platform.sh/api/security/account/me", requestOptions)
         .then((response) => response.json())  // Supposer que la réponse est au format JSON
         .then((result) => console.log(result))
         .catch((error) => console.error("Erreur lors de la mise à jour des crédits", error));
@@ -102,7 +102,7 @@ function getInfoscredits() {
         redirect: 'follow'
     };
 
-    fetch("https://ecoride.alwaysdata.net/api/security/account/me", requestOptions)
+    fetch("https://api.Startup_Eco-Ride.platform.sh/api/security/account/me", requestOptions)
         .then(response => {
             if (response.ok) {
                 return response.json();

@@ -109,7 +109,7 @@ function ajttrajet(){
       redirect: "follow"
     };
     
-    fetch("https://ecoride.alwaysdata.net/api/trajets", requestOptions)
+    fetch("https://api.Startup_Eco-Ride.platform.sh/api/trajets", requestOptions)
       .then((response) => response.text())
       .then((result) => console.log(result))
       .catch((error) => console.error(error));
@@ -138,7 +138,7 @@ const requestOptions = {
   redirect: "follow"
 };
 
-fetch("https://ecoride.alwaysdata.net/api/trajets", requestOptions)
+fetch("https://api.Startup_Eco-Ride.platform.sh/api/trajets", requestOptions)
   .then((response) => response.text())
   .then((result) => console.log(result))
   .catch((error) => console.error(error));
@@ -163,7 +163,7 @@ const requestOptions = {
   redirect: "follow"
 };
 
-fetch("https://ecoride.alwaysdata.net/api/trajets", requestOptions)
+fetch("https://api.Startup_Eco-Ride.platform.sh/api/trajets", requestOptions)
   .then((response) => response.text())
   .then((result) => console.log(result))
   .catch((error) => console.error(error));
@@ -187,7 +187,7 @@ const requestOptions = {
   redirect: "follow"
 };
 
-fetch("https://ecoride.alwaysdata.net/api/trajetsencours", requestOptions)
+fetch("https://api.Startup_Eco-Ride.platform.sh/api/trajetsencours", requestOptions)
   .then((response) => response.text())
   .then((result) => console.log(result))
   .catch((error) => console.error(error));
@@ -227,7 +227,7 @@ function ajtvehicule(){
       redirect: "follow"
     };
     
-    fetch("https://ecoride.alwaysdata.net/api/voitures", requestOptions)
+    fetch("https://api.Startup_Eco-Ride.platform.sh/api/voitures", requestOptions)
       .then((response) => response.text())
       .then((result) => console.log(result))
       .catch((error) => console.error(error));
@@ -257,7 +257,7 @@ const requestOptions = {
   redirect: "follow"
 };
 
-fetch("https://ecoride.alwaysdata.net/api/voitures", requestOptions)
+fetch("https://api.Startup_Eco-Ride.platform.sh/api/voitures", requestOptions)
   .then((response) => response.text())
   .then((result) => console.log(result))
   .catch((error) => console.error(error));
@@ -282,7 +282,7 @@ getInfosservice();
         redirect: 'follow'
     };
 
-    fetch("https://ecoride.alwaysdata.net/api/security/account/me", requestOptions)
+    fetch("https://api.Startup_Eco-Ride.platform.sh/api/security/account/me", requestOptions)
     .then(response =>{
         if(response.ok){
             return response.json();
@@ -397,7 +397,7 @@ getInfosvehicule();
         redirect: 'follow'
     };
 
-    fetch("https://ecoride.alwaysdata.net/api/security/account/me", requestOptions)
+    fetch("https://api.Startup_Eco-Ride.platform.sh/api/security/account/me", requestOptions)
     .then(response =>{
         if(response.ok){
             return response.json();
@@ -498,7 +498,7 @@ body: raw,
 redirect: "follow"
 };
 
-fetch("https://ecoride.alwaysdata.net/api/trajetsencours", requestOptions)
+fetch("https://api.Startup_Eco-Ride.platform.sh/api/trajetsencours", requestOptions)
 .then((response) => response.text())
 .then((result) => console.log(result))
 .catch((error) => console.error(error));
@@ -521,7 +521,7 @@ function gettrajetencoursInfos() {
   };
 
   // Récupérer les données depuis l'API
-  fetch("https://ecoride.alwaysdata.net/api/security/account/me", requestOptions)
+  fetch("https://api.Startup_Eco-Ride.platform.sh/api/security/account/me", requestOptions)
       .then(response => {
           if (response.ok) {
               return response.json();
@@ -641,7 +641,7 @@ function trajetterminer(){
       redirect: "follow"
     };
     
-    fetch("https://ecoride.alwaysdata.net/api/trajetsfini", requestOptions)
+    fetch("https://api.Startup_Eco-Ride.platform.sh/api/trajetsfini", requestOptions)
       .then((response) => response.text())
       .then((result) => console.log(result))
       .catch((error) => console.error(error));
@@ -662,7 +662,7 @@ function gettrajetfiniInfos() {
   };
 
   // Fetch les données
-  fetch("https://ecoride.alwaysdata.net/api/security/account/me", requestOptions)
+  fetch("https://api.Startup_Eco-Ride.platform.sh/api/security/account/me", requestOptions)
       .then(response => {
           if (response.ok) {
               return response.json();
@@ -780,7 +780,7 @@ function ajtcredit() {
     };
 
     // Effectuer la requête PUT
-    fetch("https://ecoride.alwaysdata.net/api/security/account/edit", requestOptions)
+    fetch("https://api.Startup_Eco-Ride.platform.sh/api/security/account/edit", requestOptions)
         .then((response) => response.json())  // Supposer que la réponse est au format JSON
         .then((result) => console.log(result))
         .catch((error) => console.error("Erreur lors de la mise à jour des crédits", error));
@@ -813,7 +813,7 @@ btntrajetfini.addEventListener("click", async () => {
 
   // Fonction pour envoyer le message à l'API
   const sendMessage = async () => {
-      const apiUrl = "https://ecoride.alwaysdata.net/api/send-message";
+      const apiUrl = "https://api.Startup_Eco-Ride.platform.sh/api/send-message";
       const data = {
           content: content,
           recipients: destinataires // Tableau des destinataires
@@ -906,7 +906,7 @@ function getInfoscredits() {
   };
 
   // Requête fetch pour récupérer les crédits
-  fetch("https://ecoride.alwaysdata.net/api/security/account/me", requestOptions)
+  fetch("https://api.Startup_Eco-Ride.platform.sh/api/security/account/me", requestOptions)
       .then(response => {
           if (response.ok) {
               return response.json();
