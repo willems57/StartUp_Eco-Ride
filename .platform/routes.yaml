@@ -3,16 +3,9 @@
     upstream: "frontend:http"
     cache:
         enabled: false
-    headers:
-        X-Frame-Options: "ALLOWALL"
-        X-Content-Type-Options: "nosniff"
-        X-XSS-Protection: "1; mode=block"
-        Content-Security-Policy: "frame-ancestors 'self'"
 
 "https://api.{default}/":
     type: upstream
     upstream: "backend:http"
     cache:
         enabled: false
-    headers:
-        Access-Control-Allow-Origin: "*"

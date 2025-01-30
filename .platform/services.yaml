@@ -4,4 +4,3 @@ db:
 
 redis:
     type: redis:6.0
-    disk: 256

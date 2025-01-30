@@ -8,7 +8,7 @@ web:
     locations:
         "/":
             root: "build"
-            index: "index.html"
+            index: ["index.html"]
 
 hooks:
     build: |
