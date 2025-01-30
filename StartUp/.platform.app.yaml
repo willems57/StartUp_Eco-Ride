@@ -7,10 +7,6 @@ build:
 relationships:
     database: "mysql:mysql"
 
-    variables:
-    env:
-        PHP_VERSION: "8.2"
-
 
 web:
     locations:
