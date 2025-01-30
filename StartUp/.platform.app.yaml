@@ -13,6 +13,16 @@ web:
             root: "public"
             passthru: "/index.php"
 
+dependencies:
+    php:
+        extensions:
+            - pdo
+            - pdo_mysql
+            - mysqli
+
+mounts:
+    "/var": { source: local, source_path: var }
+
 hooks:
     build: |
         composer install --no-dev --optimize-autoloader
