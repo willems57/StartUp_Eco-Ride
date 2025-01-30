@@ -5,8 +5,7 @@ build:
     flavor: composer
 
 relationships:
-    database: "mysql:mysql"
-
+    database: "db:mysql"
 
 web:
     locations:
